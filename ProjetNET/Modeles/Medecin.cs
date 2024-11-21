@@ -2,6 +2,7 @@
 {
     public class Medecin
     {
-        var i;
+        public int Id { get; set; }
+        public string NomMedecin { get; set; }
     }
 }
