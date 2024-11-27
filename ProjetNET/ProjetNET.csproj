@@ -18,8 +18,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Modeles\Repository\" />
     <Folder Include="Data\" />
+    <Folder Include="Modeles\Repository\" />
   </ItemGroup>
 
 </Project>
