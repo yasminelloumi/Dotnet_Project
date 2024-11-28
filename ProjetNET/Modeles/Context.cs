@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjetNET.Modeles
 {
-    public class Context: DbContext
+    public class Context: IdentityDbContext<ApplicationUser>
     {
         public Context (DbContextOptions options):
         
