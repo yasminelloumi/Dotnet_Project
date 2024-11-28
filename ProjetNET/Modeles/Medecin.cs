@@ -1,8 +1,9 @@
 ﻿namespace ProjetNET.Modeles
 {
-    public class Medecin
+    public class Medecin: User
     {
-        public int Id { get; set; }
-        public string NomMedecin { get; set; }
+       public string specialite {  get; set; }
+
+
     }
 }
