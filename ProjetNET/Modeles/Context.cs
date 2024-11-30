@@ -12,30 +12,25 @@ namespace ProjetNET.Modeles
             public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configurer la hiérarchie des rôles avec TPH
+            base.OnModelCreating(modelBuilder);
+
+            // Configuration de la hiérarchie avec la colonne 'role' comme discriminant
             modelBuilder.Entity<User>()
-                .HasDiscriminator<string>("Role")
+                .HasDiscriminator<string>("role") // Utiliser 'role' comme colonne discriminante
                 .HasValue<User>("user")
-                .HasValue<Medecin>(Role.Medecin)
-                .HasValue<Pharmacien>(Role.Pharmacien);
+                .HasValue<Medecin>("medecin")
+                .HasValue<Pharmacien>("pharmacien");
 
-            // Configurer les colonnes spécifiques pour Medecin et Pharmacien
-            modelBuilder.Entity<Medecin>()
-                .Property(m => m.specialite)
-                .HasMaxLength(100);
-
-            modelBuilder.Entity<Pharmacien>()
-                .Property(p => p.licenseNumber)
-                .HasMaxLength(50);
-
-            // Configurer l'index unique sur le champ Email et Username pour tous les utilisateurs
+            // Indices uniques sur email et username
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.email).IsUnique();
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.username).IsUnique();
         }
 
-        
+
+
+
     }
 
 }
