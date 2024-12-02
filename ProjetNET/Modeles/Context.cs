@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProjetNET.Modeles
@@ -15,28 +16,48 @@ namespace ProjetNET.Modeles
         {
             base.OnModelCreating(modelBuilder);
 
-
-            
+            // Configure Medecin relationship with ApplicationUser
             modelBuilder.Entity<Medecin>()
-                .HasOne(m => m.ApplicationUser) // Medecin has one ApplicationUser
-                .WithOne(u => u.MedecinProfile) // ApplicationUser has one MedecinProfile
-                .HasForeignKey<Medecin>(m => m.ApplicationUserId)
-                .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete when ApplicationUser is deleted
+                .HasOne(m => m.ApplicationUser) // Each Medecin has one ApplicationUser
+                .WithMany() // An ApplicationUser can have multiple Medecins
+                .HasForeignKey(m => m.ApplicationUserId) // Use the correct foreign key property
+                .OnDelete(DeleteBehavior.Cascade); // On delete, cascade the action
 
-            // Configure one-to-one relationship between ApplicationUser and Pharmacien
+            // Configure Pharmacien relationship with ApplicationUser
             modelBuilder.Entity<Pharmacien>()
-                .HasOne(p => p.ApplicationUser) // Pharmacien has one ApplicationUser
-                .WithOne(u => u.PharmacienProfile) // ApplicationUser has one PharmacienProfile
-                .HasForeignKey<Pharmacien>(p => p.ApplicationUserId)
-                .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete when ApplicationUser is deleted
+                .HasOne(p => p.ApplicationUser) // Each Pharmacien has one ApplicationUser
+                .WithMany() // An ApplicationUser can have multiple Pharmaciens
+                .HasForeignKey(p => p.ApplicationUserId) // Use the correct foreign key property
+                .OnDelete(DeleteBehavior.Cascade); // On delete, cascade the action
 
-            // Configure unique indexes for Email and UserName
+            // Ensure Email and UserName are unique
             modelBuilder.Entity<ApplicationUser>()
-                .HasIndex(u => u.Email).IsUnique();
+                .HasIndex(u => u.Email).IsUnique(); // Index for Email uniqueness
             modelBuilder.Entity<ApplicationUser>()
-                .HasIndex(u => u.UserName).IsUnique();
+                .HasIndex(u => u.UserName).IsUnique(); // Index for UserName uniqueness
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Admin",
+                    NormalizedName = "admin",
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                },
+            new IdentityRole()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Pharmacien",
+                NormalizedName = "pharmacien",
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+            },
+            new IdentityRole()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Medecin",
+                NormalizedName = "medecin",
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+            });
+
         }
-
-
     }
 }

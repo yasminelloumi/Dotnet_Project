@@ -1,16 +1,18 @@
-﻿/*
-namespace ProjetNET.Modeles.Repository
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ProjetNET.Modeles;
+
+namespace ProjetNET.Repositories
 {
-    public interface IUserREpository
+    public interface IUserRepository
     {
-
-        Task<User> AddUserAsync(User user);
-        Task<Medecin> AddMedecinAsync(Medecin medecin);
-        Task<Pharmacien> AddPharmacienAsync(Pharmacien pharmacien);
-        Task<User> GetUserByIdAsync(int id);
-        Task<List<User>> GetAllUsersAsync();
-        Task DeleteUserAsync(int id);
-
+        Task<ApplicationUser> GetUserByIdAsync(string userId);
+        Task<ApplicationUser> GetUserByUsernameAsync(string username);
+        Task<ApplicationUser> CreateUserAsync(ApplicationUser user, string password);
+        Task<ApplicationUser> UpdateUserAsync(ApplicationUser user);
+        Task<bool> DeleteUserAsync(string userId);
+        Task<IList<ApplicationUser>> GetAllUsersAsync();
+        Task<bool> AssignRoleToUserAsync(ApplicationUser user, string roleName);
+        Task<bool> RemoveRoleFromUserAsync(ApplicationUser user, string roleName);
     }
-    }
-*/
+}

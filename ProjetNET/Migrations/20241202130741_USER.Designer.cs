@@ -12,8 +12,8 @@ using ProjetNET.Modeles;
 namespace ProjetNET.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241201131547_Userr")]
-    partial class Userr
+    [Migration("20241202130741_USER")]
+    partial class USER
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -250,16 +250,22 @@ namespace ProjetNET.Migrations
                     b.Property<string>("ApplicationUserId1")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApplicationUserId2")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Specialite")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("ApplicationUserId1");
+
+                    b.HasIndex("ApplicationUserId2")
+                        .IsUnique()
+                        .HasFilter("[ApplicationUserId2] IS NOT NULL");
 
                     b.ToTable("Medecins");
                 });
@@ -309,16 +315,22 @@ namespace ProjetNET.Migrations
                     b.Property<string>("ApplicationUserId1")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApplicationUserId2")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LicenseNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("ApplicationUserId1");
+
+                    b.HasIndex("ApplicationUserId2")
+                        .IsUnique()
+                        .HasFilter("[ApplicationUserId2] IS NOT NULL");
 
                     b.ToTable("Pharmaciens");
                 });
@@ -377,8 +389,8 @@ namespace ProjetNET.Migrations
             modelBuilder.Entity("ProjetNET.Modeles.Medecin", b =>
                 {
                     b.HasOne("ProjetNET.Modeles.ApplicationUser", "ApplicationUser")
-                        .WithOne("MedecinProfile")
-                        .HasForeignKey("ProjetNET.Modeles.Medecin", "ApplicationUserId")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -386,20 +398,28 @@ namespace ProjetNET.Migrations
                         .WithMany("Medecins")
                         .HasForeignKey("ApplicationUserId1");
 
+                    b.HasOne("ProjetNET.Modeles.ApplicationUser", null)
+                        .WithOne("MedecinProfile")
+                        .HasForeignKey("ProjetNET.Modeles.Medecin", "ApplicationUserId2");
+
                     b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Pharmacien", b =>
                 {
                     b.HasOne("ProjetNET.Modeles.ApplicationUser", "ApplicationUser")
-                        .WithOne("PharmacienProfile")
-                        .HasForeignKey("ProjetNET.Modeles.Pharmacien", "ApplicationUserId")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ProjetNET.Modeles.ApplicationUser", null)
                         .WithMany("Pharmaciens")
                         .HasForeignKey("ApplicationUserId1");
+
+                    b.HasOne("ProjetNET.Modeles.ApplicationUser", null)
+                        .WithOne("PharmacienProfile")
+                        .HasForeignKey("ProjetNET.Modeles.Pharmacien", "ApplicationUserId2");
 
                     b.Navigation("ApplicationUser");
                 });

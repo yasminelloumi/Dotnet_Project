@@ -1,92 +1,68 @@
-﻿/*using Microsoft.AspNetCore.Mvc;
-using ProjetNET.Modeles.Repository;
+﻿using Microsoft.AspNetCore.Mvc;
 using ProjetNET.Modeles;
+using ProjetNET.Repositories;
+using System.Threading.Tasks;
 
 namespace ProjetNET.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserREpository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserController(UserREpository userRepository)
+        public UserController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
-        // GET: api/User
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<ApplicationUser>> GetUserById(string userId)
         {
-            var users = await _userRepository.GetAllUsersAsync();
-            return Ok(users);
-        }
-
-        // GET: api/User/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(int id)
-        {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound(new { Message = "User not found." });
-            }
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) return NotFound();
             return Ok(user);
         }
 
-        // POST: api/User/Medecin
-        [HttpPost("Medecin")]
-        public async Task<ActionResult<Medecin>> AddMedecin([FromBody] Medecin medecin)
-        {
-            if (medecin == null)
-            {
-                return BadRequest(new { Message = "Invalid Medecin data." });
-            }
-
-            var createdMedecin = await _userRepository.AddMedecinAsync(medecin);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdMedecin.id }, createdMedecin);
-        }
-
-        // POST: api/User/Pharmacien
-        [HttpPost("Pharmacien")]
-        public async Task<ActionResult<Pharmacien>> AddPharmacien([FromBody] Pharmacien pharmacien)
-        {
-            if (pharmacien == null)
-            {
-                return BadRequest(new { Message = "Invalid Pharmacien data." });
-            }
-
-            var createdPharmacien = await _userRepository.AddPharmacienAsync(pharmacien);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdPharmacien.id }, createdPharmacien);
-        }
-
-        // POST: api/User
         [HttpPost]
-        public async Task<ActionResult<User>> AddUser([FromBody] User user)
+        public async Task<ActionResult<ApplicationUser>> CreateUser([FromBody] ApplicationUser user, [FromQuery] string password)
         {
-            if (user == null)
-            {
-                return BadRequest(new { Message = "Invalid User data." });
-            }
-
-            var createdUser = await _userRepository.AddUserAsync(user);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.id }, createdUser);
+            var createdUser = await _userRepository.CreateUserAsync(user, password);
+            return CreatedAtAction(nameof(GetUserById), new { userId = createdUser.Id }, createdUser);
         }
 
-        // DELETE: api/User/{id}
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUser(int id)
+        [HttpPut("{userId}")]
+        public async Task<ActionResult<ApplicationUser>> UpdateUser(string userId, [FromBody] ApplicationUser user)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound(new { Message = "User not found." });
-            }
+            if (userId != user.Id) return BadRequest("User ID mismatch");
+            var updatedUser = await _userRepository.UpdateUserAsync(user);
+            return Ok(updatedUser);
+        }
 
-            await _userRepository.DeleteUserAsync(id);
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteUser(string userId)
+        {
+            var success = await _userRepository.DeleteUserAsync(userId);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+
+        [HttpPost("{userId}/role/{roleName}")]
+        public async Task<ActionResult> AssignRoleToUser(string userId, string roleName)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) return NotFound();
+            await _userRepository.AssignRoleToUserAsync(user, roleName);
+            return NoContent();
+        }
+
+        [HttpDelete("{userId}/role/{roleName}")]
+        public async Task<ActionResult> RemoveRoleFromUser(string userId, string roleName)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) return NotFound();
+            await _userRepository.RemoveRoleFromUserAsync(user, roleName);
             return NoContent();
         }
     }
 }
-*/

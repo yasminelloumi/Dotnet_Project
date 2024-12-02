@@ -1,68 +1,105 @@
-﻿/*
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ProjetNET.Modeles;
+using ProjetNET.Repositories;
+using System;
 
-namespace ProjetNET.Modeles.Repository
 
+
+namespace ProjetNET.Repository
 {
-    public class UserREpository : IUserREpository
+    public class UserRepository : IUserRepository
     {
-        private Context context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly Context _context;
 
-        public UserREpository(Context context)
+        public UserRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, Context context)
         {
-            this.context = context;
-        }
-        // Ajouter un utilisateur générique
-        public async Task<User> AddUserAsync(User user)
-        {
-            var result = await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-            return result.Entity;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _context = context;
         }
 
-        // Ajouter un médecin
-        public async Task<Medecin> AddMedecinAsync(Medecin medecin)
+        // Get user by Id
+        public async Task<ApplicationUser> GetUserByIdAsync(string userId)
         {
-            var result = await context.Users.AddAsync(medecin);
-            await context.SaveChangesAsync();
-            return (Medecin)result.Entity;
+            return await _userManager.FindByIdAsync(userId);
         }
 
-        // Ajouter un pharmacien
-        public async Task<Pharmacien> AddPharmacienAsync(Pharmacien pharmacien)
+        // Get user by Username
+        public async Task<ApplicationUser> GetUserByUsernameAsync(string username)
         {
-            var result = await context.Users.AddAsync(pharmacien);
-            await context.SaveChangesAsync();
-            return (Pharmacien)result.Entity;
+            return await _userManager.FindByNameAsync(username);
         }
 
-        // Obtenir un utilisateur par ID
-        public async Task<User> GetUserByIdAsync(int id)
+        // Create a new user
+        public async Task<ApplicationUser> CreateUserAsync(ApplicationUser user, string password)
         {
-            return await context.Users.FindAsync(id);
-        }
-
-        // Obtenir tous les utilisateurs
-        public async Task<List<User>> GetAllUsersAsync()
-        {
-            return await context.Users.ToListAsync();
-        }
-
-        // Supprimer un utilisateur
-        public async Task DeleteUserAsync(int id)
-        {
-            var user = await context.Users.FindAsync(id);
-            if (user != null)
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
             {
-                context.Users.Remove(user);
-                await context.SaveChangesAsync();
+                return user;
             }
+            throw new Exception("User creation failed");
+        }
 
+        // Update an existing user
+        public async Task<ApplicationUser> UpdateUserAsync(ApplicationUser user)
+        {
+            var existingUser = await _userManager.FindByIdAsync(user.Id);
+            if (existingUser == null)
+                throw new Exception("User not found");
 
+            existingUser.UserName = user.UserName;
+            existingUser.Email = user.Email;
+            existingUser.PhoneNumber = user.PhoneNumber;
+
+            var result = await _userManager.UpdateAsync(existingUser);
+            if (result.Succeeded)
+            {
+                return existingUser;
+            }
+            throw new Exception("User update failed");
+        }
+
+        // Delete a user
+        public async Task<bool> DeleteUserAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new Exception("User not found");
+
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded;
+        }
+
+        // Get all users
+        public async Task<IList<ApplicationUser>> GetAllUsersAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
+        // Assign role to user
+        public async Task<bool> AssignRoleToUserAsync(ApplicationUser user, string roleName)
+        {
+            if (await _roleManager.RoleExistsAsync(roleName))
+            {
+                var result = await _userManager.AddToRoleAsync(user, roleName);
+                return result.Succeeded;
+            }
+            throw new Exception("Role does not exist");
+        }
+
+        // Remove role from user
+        public async Task<bool> RemoveRoleFromUserAsync(ApplicationUser user, string roleName)
+        {
+            if (await _roleManager.RoleExistsAsync(roleName))
+            {
+                var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+                return result.Succeeded;
+            }
+            throw new Exception("Role does not exist");
         }
     }
-
 }
-
-
-*/
