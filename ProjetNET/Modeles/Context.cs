@@ -14,6 +14,7 @@ namespace ProjetNET.Modeles
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+<<<<<<< HEAD
 
             // Configure one-to-one relationship between ApplicationUser and Medecin
             modelBuilder.Entity<Medecin>()
@@ -35,5 +36,25 @@ namespace ProjetNET.Modeles
             modelBuilder.Entity<ApplicationUser>()
                 .HasIndex(u => u.UserName).IsUnique();
         }
+=======
+
+            // Configuration de la hiérarchie avec la colonne 'role' comme discriminant
+            modelBuilder.Entity<User>()
+                .HasDiscriminator<string>("role") // Utiliser 'role' comme colonne discriminante
+                .HasValue<User>("user")
+                .HasValue<Medecin>("medecin")
+                .HasValue<Pharmacien>("pharmacien");
+
+            // Indices uniques sur email et username
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.email).IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.username).IsUnique();
+        }
+
+
+
+
+>>>>>>> de88fed3bfac8b68cabdc3326738aeb6b540fe3c
     }
 }
