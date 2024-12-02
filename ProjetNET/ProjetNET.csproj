@@ -18,15 +18,10 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 	</ItemGroup>
 
-<<<<<<< HEAD
+
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Modeles\Repository\" />
   </ItemGroup>
-=======
-	<ItemGroup>
-		<Folder Include="data\" />
-	</ItemGroup>
->>>>>>> 10e04de1e6b73b2aa0d5eb49265c7b77c0e75da1
 
 </Project>
