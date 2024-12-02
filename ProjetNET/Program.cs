@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProjetNET.Modeles;
 using ProjetNET.Repositories;
-using ProjetNET.Repository;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +21,7 @@ builder.Services.AddDbContext<Context>(
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, IUserRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
