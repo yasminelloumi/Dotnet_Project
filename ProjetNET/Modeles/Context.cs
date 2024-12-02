@@ -14,9 +14,9 @@ namespace ProjetNET.Modeles
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-<<<<<<< HEAD
 
-            // Configure one-to-one relationship between ApplicationUser and Medecin
+
+            
             modelBuilder.Entity<Medecin>()
                 .HasOne(m => m.ApplicationUser) // Medecin has one ApplicationUser
                 .WithOne(u => u.MedecinProfile) // ApplicationUser has one MedecinProfile
@@ -36,7 +36,7 @@ namespace ProjetNET.Modeles
             modelBuilder.Entity<ApplicationUser>()
                 .HasIndex(u => u.UserName).IsUnique();
         }
-=======
+
 
             // Configuration de la hiérarchie avec la colonne 'role' comme discriminant
             modelBuilder.Entity<User>()
@@ -55,6 +55,5 @@ namespace ProjetNET.Modeles
 
 
 
->>>>>>> de88fed3bfac8b68cabdc3326738aeb6b540fe3c
     }
 }
