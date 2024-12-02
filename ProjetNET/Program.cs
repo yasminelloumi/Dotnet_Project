@@ -4,7 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProjetNET.Modeles;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using System.Text;
+=======
+using ProjetNET.Modeles.Repository;
+>>>>>>> 10e04de1e6b73b2aa0d5eb49265c7b77c0e75da1
 =======
 using ProjetNET.Modeles.Repository;
 >>>>>>> 10e04de1e6b73b2aa0d5eb49265c7b77c0e75da1
