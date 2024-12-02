@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿/*using System.ComponentModel.DataAnnotations;
 
 namespace ProjetNET.Modeles
 {
@@ -6,7 +6,6 @@ namespace ProjetNET.Modeles
     {
         [Key]
         public int id { get; set; }
-        public object Id { get; internal set; }
         public string name { get; set; }
         public string username { get; set; }
         public string email { get; set; }
@@ -15,3 +14,4 @@ namespace ProjetNET.Modeles
 
     }
 }
+*/

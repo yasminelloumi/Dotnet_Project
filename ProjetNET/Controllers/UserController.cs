@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*using Microsoft.AspNetCore.Mvc;
 using ProjetNET.Modeles.Repository;
 using ProjetNET.Modeles;
 
@@ -45,7 +45,7 @@ namespace ProjetNET.Controllers
             }
 
             var createdMedecin = await _userRepository.AddMedecinAsync(medecin);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdMedecin.Id }, createdMedecin);
+            return CreatedAtAction(nameof(GetUserById), new { id = createdMedecin.id }, createdMedecin);
         }
 
         // POST: api/User/Pharmacien
@@ -58,7 +58,7 @@ namespace ProjetNET.Controllers
             }
 
             var createdPharmacien = await _userRepository.AddPharmacienAsync(pharmacien);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdPharmacien.Id }, createdPharmacien);
+            return CreatedAtAction(nameof(GetUserById), new { id = createdPharmacien.id }, createdPharmacien);
         }
 
         // POST: api/User
@@ -71,7 +71,7 @@ namespace ProjetNET.Controllers
             }
 
             var createdUser = await _userRepository.AddUserAsync(user);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.id }, createdUser);
         }
 
         // DELETE: api/User/{id}
@@ -89,3 +89,4 @@ namespace ProjetNET.Controllers
         }
     }
 }
+*/

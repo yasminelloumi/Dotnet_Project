@@ -1,4 +1,4 @@
-﻿namespace ProjetNET.Modeles
+﻿/*namespace ProjetNET.Modeles
 {
     public static class Role
     {
@@ -20,4 +20,5 @@
 
 
 }
+*/
 

@@ -1,4 +1,5 @@
-﻿namespace ProjetNET.Modeles.Repository
+﻿/*
+namespace ProjetNET.Modeles.Repository
 {
     public interface IUserREpository
     {
@@ -12,4 +13,4 @@
 
     }
     }
-
+*/

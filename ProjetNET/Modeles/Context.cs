@@ -3,42 +3,37 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProjetNET.Modeles
 {
-    public class Context: IdentityDbContext<ApplicationUser>
+    public class Context : IdentityDbContext<ApplicationUser>
     {
-        public Context (DbContextOptions options):
-        
-            base(options){ }
-            public DbSet<Medicament> Medicaments { get; set; }
-            public DbSet<User> Users { get; set; }
+        public Context(DbContextOptions<Context> options) : base(options) { }
+
+        public DbSet<Medicament> Medicaments { get; set; }
+        public DbSet<Medecin> Medecins { get; set; }
+        public DbSet<Pharmacien> Pharmaciens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configurer la hiérarchie des rôles avec TPH
-            modelBuilder.Entity<User>()
-                .HasDiscriminator<string>("Role")
-                .HasValue<User>("user")
-                .HasValue<Medecin>(Role.Medecin)
-                .HasValue<Pharmacien>(Role.Pharmacien);
+            base.OnModelCreating(modelBuilder);
 
-            // Configurer les colonnes spécifiques pour Medecin et Pharmacien
+            // Configure one-to-one relationship between ApplicationUser and Medecin
             modelBuilder.Entity<Medecin>()
-                .Property(m => m.specialite)
-                .HasMaxLength(100);
+                .HasOne(m => m.ApplicationUser) // Medecin has one ApplicationUser
+                .WithOne(u => u.MedecinProfile) // ApplicationUser has one MedecinProfile
+                .HasForeignKey<Medecin>(m => m.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete when ApplicationUser is deleted
 
+            // Configure one-to-one relationship between ApplicationUser and Pharmacien
             modelBuilder.Entity<Pharmacien>()
-                .Property(p => p.licenseNumber)
-                .HasMaxLength(50);
+                .HasOne(p => p.ApplicationUser) // Pharmacien has one ApplicationUser
+                .WithOne(u => u.PharmacienProfile) // ApplicationUser has one PharmacienProfile
+                .HasForeignKey<Pharmacien>(p => p.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete when ApplicationUser is deleted
 
-            // Configurer l'index unique sur le champ Email et Username pour tous les utilisateurs
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.email).IsUnique();
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.username).IsUnique();
+            // Configure unique indexes for Email and UserName
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(u => u.Email).IsUnique();
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(u => u.UserName).IsUnique();
         }
-
-        
     }
-
 }
-
-    
-

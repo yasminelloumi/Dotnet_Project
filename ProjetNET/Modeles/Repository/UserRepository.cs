@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjetNET.Modeles.Repository
 
@@ -64,3 +65,4 @@ namespace ProjetNET.Modeles.Repository
 }
 
 
+*/
