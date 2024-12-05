@@ -47,29 +47,6 @@ namespace ProjetNET.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "51cdcee7-99c2-4aeb-8c08-3dd0e8e516f0",
-                            ConcurrencyStamp = "e4dbb981-1ee6-4cca-a478-f370f74042bb",
-                            Name = "Admin",
-                            NormalizedName = "admin"
-                        },
-                        new
-                        {
-                            Id = "1a77d522-c050-4e11-87f3-459e680a6fee",
-                            ConcurrencyStamp = "d1fd2b2b-ca7e-4c1d-9220-84aa9ecb902d",
-                            Name = "Pharmacien",
-                            NormalizedName = "pharmacien"
-                        },
-                        new
-                        {
-                            Id = "92fbdedd-d07a-4709-8dbf-c144926b8f33",
-                            ConcurrencyStamp = "2cf74f64-5079-41f4-9949-3485473c0444",
-                            Name = "Medecin",
-                            NormalizedName = "medecin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -236,10 +213,6 @@ namespace ProjetNET.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -248,29 +221,12 @@ namespace ProjetNET.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("UserName")
-                        .IsUnique()
-                        .HasFilter("[UserName] IS NOT NULL");
-
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Medecin", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ApplicationUserId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ApplicationUserId2")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Specialite")
@@ -278,14 +234,6 @@ namespace ProjetNET.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("ApplicationUserId1");
-
-                    b.HasIndex("ApplicationUserId2")
-                        .IsUnique()
-                        .HasFilter("[ApplicationUserId2] IS NOT NULL");
 
                     b.ToTable("Medecins");
                 });
@@ -322,20 +270,7 @@ namespace ProjetNET.Migrations
 
             modelBuilder.Entity("ProjetNET.Modeles.Pharmacien", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ApplicationUserId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ApplicationUserId2")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LicenseNumber")
@@ -343,14 +278,6 @@ namespace ProjetNET.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("ApplicationUserId1");
-
-                    b.HasIndex("ApplicationUserId2")
-                        .IsUnique()
-                        .HasFilter("[ApplicationUserId2] IS NOT NULL");
 
                     b.ToTable("Pharmaciens");
                 });
@@ -408,53 +335,24 @@ namespace ProjetNET.Migrations
 
             modelBuilder.Entity("ProjetNET.Modeles.Medecin", b =>
                 {
-                    b.HasOne("ProjetNET.Modeles.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
+                    b.HasOne("ProjetNET.Modeles.ApplicationUser", "User")
+                        .WithOne()
+                        .HasForeignKey("ProjetNET.Modeles.Medecin", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjetNET.Modeles.ApplicationUser", null)
-                        .WithMany("Medecins")
-                        .HasForeignKey("ApplicationUserId1");
-
-                    b.HasOne("ProjetNET.Modeles.ApplicationUser", null)
-                        .WithOne("MedecinProfile")
-                        .HasForeignKey("ProjetNET.Modeles.Medecin", "ApplicationUserId2");
-
-                    b.Navigation("ApplicationUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Pharmacien", b =>
                 {
-                    b.HasOne("ProjetNET.Modeles.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
+                    b.HasOne("ProjetNET.Modeles.ApplicationUser", "User")
+                        .WithOne()
+                        .HasForeignKey("ProjetNET.Modeles.Pharmacien", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjetNET.Modeles.ApplicationUser", null)
-                        .WithMany("Pharmaciens")
-                        .HasForeignKey("ApplicationUserId1");
-
-                    b.HasOne("ProjetNET.Modeles.ApplicationUser", null)
-                        .WithOne("PharmacienProfile")
-                        .HasForeignKey("ProjetNET.Modeles.Pharmacien", "ApplicationUserId2");
-
-                    b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("ProjetNET.Modeles.ApplicationUser", b =>
-                {
-                    b.Navigation("MedecinProfile")
-                        .IsRequired();
-
-                    b.Navigation("Medecins");
-
-                    b.Navigation("PharmacienProfile")
-                        .IsRequired();
-
-                    b.Navigation("Pharmaciens");
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
