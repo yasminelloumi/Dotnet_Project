@@ -14,5 +14,7 @@ namespace ProjetNET.Repositories
         Task<IList<ApplicationUser>> GetAllUsersAsync();
         Task<bool> AssignRoleToUserAsync(ApplicationUser user, string roleName);
         Task<bool> RemoveRoleFromUserAsync(ApplicationUser user, string roleName);
+        Task<string> AuthenticateUserAsync(string username, string password);
+
     }
 }

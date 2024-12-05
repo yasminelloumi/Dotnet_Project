@@ -2,13 +2,12 @@
 
 namespace ProjetNET.DTO
 {
-    public class RegisterDTO
+    public class RegisterDto
     {
-        [Required]
-        public string Username { get; set; }
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-        [EmailAddress]
+        public string UserName { get; set; }
         public string Email { get; set; }
+        public string Password { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Role { get; set; } // Optional: "admin", "medecin", "pharmacien"
     }
 }

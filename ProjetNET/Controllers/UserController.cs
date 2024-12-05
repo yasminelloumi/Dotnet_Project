@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetNET.DTO;
 using ProjetNET.Modeles;
 using ProjetNET.Repositories;
 using System.Threading.Tasks;
@@ -63,6 +64,42 @@ namespace ProjetNET.Controllers
             if (user == null) return NotFound();
             await _userRepository.RemoveRoleFromUserAsync(user, roleName);
             return NoContent();
+        }
+
+        // Register Method
+        [HttpPost("register")]
+        public async Task<ActionResult<ApplicationUser>> Register([FromBody] RegisterDto registerDto)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = registerDto.UserName,
+                Email = registerDto.Email,
+                PhoneNumber = registerDto.PhoneNumber,
+                Role = registerDto.Role // Optional field for assigning role
+            };
+
+            var result = await _userRepository.CreateUserAsync(user, registerDto.Password);
+            if (result == null)
+                return BadRequest("Failed to register user");
+
+            // Optionally assign a role during registration
+            if (!string.IsNullOrEmpty(registerDto.Role))
+            {
+                await _userRepository.AssignRoleToUserAsync(result, registerDto.Role);
+            }
+
+            return CreatedAtAction(nameof(GetUserById), new { userId = result.Id }, result);
+        }
+
+        // Login Method
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login([FromBody] LoginDto loginDto)
+        {
+            var token = await _userRepository.AuthenticateUserAsync(loginDto.UserName, loginDto.Password);
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized("Invalid username or password");
+
+            return Ok(token);
         }
     }
 }
