@@ -52,6 +52,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Seed roles during application startup
+await SeedRolesAsync(app.Services);
+
 // Configuration du pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
@@ -66,3 +69,33 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Method to seed roles
+async Task SeedRolesAsync(IServiceProvider serviceProvider)
+{
+    using var scope = serviceProvider.CreateScope();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var roles = new[] { "pharmacien", "medecin" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            var result = await roleManager.CreateAsync(new IdentityRole(role));
+            if (result.Succeeded)
+            {
+                Console.WriteLine($"Role '{role}' created successfully.");
+            }
+            else
+            {
+                Console.WriteLine($"Error creating role '{role}': {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Role '{role}' already exists.");
+        }
+    }
+}
+
