@@ -30,13 +30,34 @@ namespace ProjetNET.Controllers
             if (user == null) return NotFound();
             return Ok(user);
         }
+        [HttpGet("")]
+        public async Task<ActionResult<ApplicationUser>> GetAllUsers(string userId)
+        {
+            var user = await _userRepository.GetAllUsersAsync();
+            return Ok(user);
+        }
+
 
         [HttpPost]
-        public async Task<ActionResult<ApplicationUser>> CreateUser([FromBody] ApplicationUser user, [FromQuery] string password)
+        public async Task<ActionResult<ApplicationUser>> CreateUser([FromBody] RegisterDto model)
         {
-            var createdUser = await _userRepository.CreateUserAsync(user, password);
-            return CreatedAtAction(nameof(GetUserById), new { userId = createdUser.Id }, createdUser);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                // Call the repository method to create the user
+                var createdUser = await _userRepository.CreateUserAsync(model.UserName, model.Email, model.Password);
+
+                // Return the created user with a 201 Created response
+                return CreatedAtAction(nameof(GetUserById), new { userId = createdUser.Id }, createdUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
         }
+
 
         [HttpPut("{userId}")]
         public async Task<ActionResult<ApplicationUser>> UpdateUser(string userId, [FromBody] ApplicationUser user)
@@ -46,13 +67,18 @@ namespace ProjetNET.Controllers
             return Ok(updatedUser);
         }
 
-        [HttpDelete("{userId}")]
-        public async Task<ActionResult> DeleteUser(string userId)
+        [HttpDelete("{email}")]
+        public async Task<ActionResult> DeleteUser(string email)
         {
-            var success = await _userRepository.DeleteUserAsync(userId);
-            if (!success) return NotFound();
-            return NoContent();
+            var success = await _userRepository.DeleteUserAsync(email);
+            if (!success)
+            {
+                return NotFound("User not found or deletion failed.");
+            }
+
+            return Ok("The user has been deleted successfully");
         }
+
 
         [HttpPost("{userId}/role/{roleName}")]
         public async Task<ActionResult> AssignRoleToUser(string userId, string roleName)

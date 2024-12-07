@@ -35,15 +35,30 @@ namespace ProjetNET.Repository
             return user ?? throw new Exception("User not found");
         }
 
-        // Create a new user
-        public async Task<ApplicationUser> CreateUserAsync(ApplicationUser user, string password)
+        // Get user by email
+        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
         {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user ?? throw new Exception("User not found");
+        }
+        // Create a new user
+        public async Task<ApplicationUser> CreateUserAsync(string userName, string email, string password)
+        {
+            // Create a new user instance
+            var user = new ApplicationUser
+            {
+                UserName = userName,
+                Email = email
+            };
+
+            // Use UserManager to create the user
             var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
-                throw new Exception("User creation failed: " + string.Join(", ", result.Errors));
+                throw new Exception("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
 
             return user;
         }
+
 
         // Update an existing user
         public async Task<ApplicationUser> UpdateUserAsync(ApplicationUser user)
@@ -62,15 +77,17 @@ namespace ProjetNET.Repository
         }
 
         // Delete a user
-        public async Task<bool> DeleteUserAsync(string userId)
+        public async Task<bool> DeleteUserAsync(string email)
         {
-            var user = await GetUserByIdAsync(userId);
+            var user = await GetUserByEmailAsync(email);
             var result = await _userManager.DeleteAsync(user);
+
             if (!result.Succeeded)
                 throw new Exception("User deletion failed: " + string.Join(", ", result.Errors));
 
             return true;
         }
+
 
         // Get all users
         public async Task<IList<ApplicationUser>> GetAllUsersAsync()
