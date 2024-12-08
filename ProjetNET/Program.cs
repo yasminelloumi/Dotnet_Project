@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProjetNET.Modeles;
+using ProjetNET.Modeles.Repository;
 using ProjetNET.Repositories;
 using ProjetNET.Repository;
 using System.Text;
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<Context>(options => options.UseSqlServer(cnx));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
+//
+builder.Services.AddScoped<IMedicamentRepository, MedicamentRepository>();
 
 // Injection des dépendances
 builder.Services.AddScoped<IUserRepository, UserRepository>();
