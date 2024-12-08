@@ -160,7 +160,7 @@ namespace ProjetNET.Controllers
                 return NotFound("User not found or deletion failed.");
             }
 
-            return Ok("The user has been deleted successfully");
+            return Ok("The user has been deleted successfully.");
         }
 
         /*
@@ -182,5 +182,33 @@ namespace ProjetNET.Controllers
             return NoContent();
         }
         */
+
+        [HttpGet("medecins")]
+        public async Task<IActionResult> GetMedecins()
+        {
+            try
+            {
+                var medecins = await _userRepository.GetMedecinsWithDetailsAsync();
+                return Ok(medecins);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+        [HttpGet("pharmaciens")]
+        public async Task<IActionResult> GetPharmaciens()
+        {
+            try
+            {
+                var pharmaciens = await _userRepository.GetPharmaciensWithDetailsAsync();
+                return Ok(pharmaciens);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
     }
 }

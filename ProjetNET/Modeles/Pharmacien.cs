@@ -8,11 +8,11 @@ namespace ProjetNET.Modeles
     {
         
         [Key]
-        public string Id { get; set; } // Primary key (and foreign key)
+        public string Id { get; set; } 
 
-        [ForeignKey(nameof(Id))] // Establish foreign key relationship with ApplicationUser
-        public virtual ApplicationUser User { get; set; } // Virtual navigation property for lazy loading
+        [ForeignKey(nameof(Id))] 
+        public virtual ApplicationUser User { get; set; } 
 
-        public string LicenseNumber { get; set; } // Pharmacien-specific attribute
+        public string LicenseNumber { get; set; } 
     }
 }

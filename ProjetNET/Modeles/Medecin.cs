@@ -7,11 +7,11 @@ namespace ProjetNET.Modeles
     public class Medecin
     {
         [Key]
-        public string Id { get; set; } // Primary and foreign key
+        public string Id { get; set; } 
 
         [ForeignKey("Id")]
         public ApplicationUser User { get; set; }
 
-        public string Specialite { get; set; } // Medecin-specific attribute
+        public string Specialite { get; set; } 
     }
 }

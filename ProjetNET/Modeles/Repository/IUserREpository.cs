@@ -16,6 +16,8 @@ namespace ProjetNET.Repositories
         Task<bool> AssignRoleToUserAsync(ApplicationUser user, string roleName);
         Task<bool> RemoveRoleFromUserAsync(ApplicationUser user, string roleName);
         Task<string> AuthenticateUserAsync(string username, string password);
+        Task<IEnumerable<object>> GetMedecinsWithDetailsAsync();
+        Task<IEnumerable<object>> GetPharmaciensWithDetailsAsync();
 
     }
 }

@@ -85,10 +85,8 @@ namespace ProjetNET.Repository
         // Update an existing user
         public async Task<ApplicationUser> UpdateUserAsync(string userId, string newUserName, string newEmail)
         {
-            // Retrieve the user by ID
             var user = await GetUserByIdAsync(userId);
 
-            // Check if the username is already taken
             if (newUserName != user.UserName)
             {
                 var existingUserByUsername = await _userManager.FindByNameAsync(newUserName);
@@ -110,7 +108,6 @@ namespace ProjetNET.Repository
                 user.Email = newEmail;
             }
 
-            // Attempt to update the user in the database
             try
             {
                 var result = await _userManager.UpdateAsync(user);
@@ -129,8 +126,6 @@ namespace ProjetNET.Repository
         }
 
 
-
-
         // Delete a user
         public async Task<bool> DeleteUserAsync(string email)
         {
@@ -142,7 +137,6 @@ namespace ProjetNET.Repository
 
             return true;
         }
-
 
         // Get all users
         public async Task<IList<ApplicationUser>> GetAllUsersAsync()
@@ -176,7 +170,7 @@ namespace ProjetNET.Repository
             return true;
         }
 
-        // Authenticate user (optional, depending on implementation)
+        // Authenticate user
         public async Task<string> AuthenticateUserAsync(string username, string password)
         {
             var user = await GetUserByUsernameAsync(username);
@@ -185,5 +179,33 @@ namespace ProjetNET.Repository
 
             return user.Id; // Or generate a token here if JWT is being used
         }
+        public async Task<IEnumerable<object>> GetMedecinsWithDetailsAsync()
+        {
+            return await _context.Medecins
+                .Include(m => m.User) 
+                .Select(m => new
+                {
+                    Id = m.Id,
+                    UserName = m.User.UserName,
+                    Email = m.User.Email,
+                    Specialite = m.Specialite
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<object>> GetPharmaciensWithDetailsAsync()
+        {
+            return await _context.Pharmaciens
+                .Include(p => p.User)
+                .Select(p => new
+                {
+                    Id = p.Id,
+                    UserName = p.User.UserName,
+                    Email = p.User.Email,
+                    LicenseNumber = p.LicenseNumber
+                })
+                .ToListAsync();
+        }
+
     }
 }

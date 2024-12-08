@@ -16,10 +16,9 @@ namespace ProjetNET.DTO
         public string Password { get; set; }
 
         [Required]
-        public string Role { get; set; } // Role: medecin/pharmacien
+        public string Role { get; set; } 
 
-        // Specific attributes for roles
-        public string? LicenseNumber { get; set; } // For pharmacien
-        public string? Specialite { get; set; } // For medecin
+        public string? LicenseNumber { get; set; } 
+        public string? Specialite { get; set; } 
     }
 }
