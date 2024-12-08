@@ -9,7 +9,8 @@ namespace ProjetNET.Repositories
         Task<ApplicationUser> GetUserByIdAsync(string userId);
         Task<ApplicationUser> GetUserByUsernameAsync(string username);
         Task<ApplicationUser> CreateUserAsync(string userName, string email, string password);
-        Task<ApplicationUser> UpdateUserAsync(ApplicationUser user);
+        Task<ApplicationUser> UpdateUserAsync(string oldEmail, string newUserName, string newEmail);
+
         Task<bool> DeleteUserAsync(string userId);
         Task<IList<ApplicationUser>> GetAllUsersAsync();
         Task<bool> AssignRoleToUserAsync(ApplicationUser user, string roleName);

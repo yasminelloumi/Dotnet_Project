@@ -40,41 +40,96 @@ namespace ProjetNET.Repository
         {
             var user = await _userManager.FindByEmailAsync(email);
             return user ?? throw new Exception("User not found");
+
         }
         // Create a new user
         public async Task<ApplicationUser> CreateUserAsync(string userName, string email, string password)
         {
-            // Create a new user instance
+            var existingUserByEmail = await _userManager.FindByEmailAsync(email);
+            if (existingUserByEmail != null)
+            {
+                throw new Exception("A user with this email already exists.");
+            }
+
+            var existingUserByUsername = await _userManager.FindByNameAsync(userName);
+            if (existingUserByUsername != null)
+            {
+                throw new Exception("A user with this username already exists.");
+            }
+
             var user = new ApplicationUser
             {
                 UserName = userName,
                 Email = email
             };
 
-            // Use UserManager to create the user
-            var result = await _userManager.CreateAsync(user, password);
-            if (!result.Succeeded)
-                throw new Exception("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            try
+            {
+                var result = await _userManager.CreateAsync(user, password);
 
-            return user;
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    throw new Exception($"User creation failed: {errors}");
+                }
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while creating the user: {ex.Message}", ex);
+            }
         }
 
 
         // Update an existing user
-        public async Task<ApplicationUser> UpdateUserAsync(ApplicationUser user)
+        public async Task<ApplicationUser> UpdateUserAsync(string userId, string newUserName, string newEmail)
         {
-            var existingUser = await GetUserByIdAsync(user.Id);
+            // Retrieve the user by ID
+            var user = await GetUserByIdAsync(userId);
 
-            existingUser.UserName = user.UserName;
-            existingUser.Email = user.Email;
-            existingUser.PhoneNumber = user.PhoneNumber;
+            // Check if the username is already taken
+            if (newUserName != user.UserName)
+            {
+                var existingUserByUsername = await _userManager.FindByNameAsync(newUserName);
+                if (existingUserByUsername != null)
+                {
+                    throw new Exception("A user with this username already exists.");
+                }
+                user.UserName = newUserName;
+            }
 
-            var result = await _userManager.UpdateAsync(existingUser);
-            if (!result.Succeeded)
-                throw new Exception("User update failed: " + string.Join(", ", result.Errors));
+            // Check if the email is already taken
+            if (newEmail != user.Email)
+            {
+                var existingUserByEmail = await _userManager.FindByEmailAsync(newEmail);
+                if (existingUserByEmail != null)
+                {
+                    throw new Exception("A user with this email already exists.");
+                }
+                user.Email = newEmail;
+            }
 
-            return existingUser;
+            // Attempt to update the user in the database
+            try
+            {
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    throw new Exception($"User update failed: {errors}");
+                }
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while updating the user: {ex.Message}", ex);
+            }
         }
+
+
+
 
         // Delete a user
         public async Task<bool> DeleteUserAsync(string email)
