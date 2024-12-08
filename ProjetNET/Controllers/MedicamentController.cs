@@ -53,9 +53,12 @@ namespace ProjetNET.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Medicament medicament)
         {
+            // Set the incoming object's ID to the route ID
+            medicament.Id = id;
+
             if (id != medicament.Id)
             {
-                return BadRequest("Medicament ID mismatch.");
+                return BadRequest($"Medicament ID mismatch. Route ID: {id}, Medicament ID: {medicament.Id}");
             }
 
             var existingMedicament = await medicamentRepository.GetById(id);
@@ -64,9 +67,25 @@ namespace ProjetNET.Controllers
                 return NotFound($"Medicament with ID {id} not found.");
             }
 
-            await medicamentRepository.Update(medicament);
-            return NoContent(); // Indicate the update was successful.
+            // Update the entity
+            existingMedicament.Name = medicament.Name;
+            existingMedicament.Description = medicament.Description;
+            existingMedicament.Prix = medicament.Prix;
+            existingMedicament.QttStock = medicament.QttStock;
+            existingMedicament.DateExpiration = medicament.DateExpiration;
+
+            try
+            {
+                await medicamentRepository.Update(existingMedicament);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
+            return NoContent(); // Update successful
         }
+
 
         // DELETE: api/Medicament/{id}
         [HttpDelete("{id}")]
