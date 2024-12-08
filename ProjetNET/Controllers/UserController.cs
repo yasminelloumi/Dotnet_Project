@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetNET.DTO;
-using ProjetNET.Migrations;
+
 using ProjetNET.Modeles;
 using ProjetNET.Repositories;
 using System.Threading.Tasks;

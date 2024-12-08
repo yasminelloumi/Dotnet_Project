@@ -12,8 +12,8 @@ using ProjetNET.Modeles;
 namespace ProjetNET.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241206130601_users")]
-    partial class users
+    [Migration("20241208191151_bdd")]
+    partial class bdd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
