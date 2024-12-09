@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -38,12 +39,10 @@ public class AccountController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        // Check if user already exists
         var existingUser = await _userManager.FindByEmailAsync(model.Email);
         if (existingUser != null)
             return BadRequest("A user with this email already exists.");
 
-        // Check if the role exists
         if (!await _roleManager.RoleExistsAsync(model.Role))
             return BadRequest($"The role '{model.Role}' does not exist.");
 
@@ -59,12 +58,10 @@ public class AccountController : ControllerBase
         if (!createUserResult.Succeeded)
             return BadRequest(createUserResult.Errors);
 
-        // Role-specific handling
         if (model.Role == "pharmacien")
         {
             if (string.IsNullOrEmpty(model.LicenseNumber))
             {
-                // Delete user if required data is missing
                 await _userManager.DeleteAsync(user);
                 return BadRequest("LicenseNumber is required for pharmacien.");
             }
@@ -80,7 +77,6 @@ public class AccountController : ControllerBase
         {
             if (string.IsNullOrEmpty(model.Specialite))
             {
-                // Delete user if required data is missing
                 await _userManager.DeleteAsync(user);
                 return BadRequest("Specialite is required for medecin.");
             }
@@ -93,14 +89,11 @@ public class AccountController : ControllerBase
             _context.Medecins.Add(medecin);
         }
 
-        // Save additional role-specific data to the database
         await _context.SaveChangesAsync();
 
-        // Assign the user to the specified role
         var addToRoleResult = await _userManager.AddToRoleAsync(user, model.Role);
         if (!addToRoleResult.Succeeded)
         {
-            // Clean up user and related data if role assignment fails
             _context.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
             await _context.SaveChangesAsync();
             return BadRequest(addToRoleResult.Errors);
@@ -120,10 +113,70 @@ public class AccountController : ControllerBase
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             return Unauthorized("Invalid credentials.");
 
-        // Generate JWT token and return it
         var token = GenerateJwtToken(user);
         return Ok(new { Token = token });
     }
+
+    [HttpGet("profile")]
+    [Authorize]
+    public async Task<IActionResult> GetUserProfile()
+    {
+        try
+        {
+            foreach (var claim in User.Claims)
+            {
+                Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
+            }
+            var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            Console.WriteLine($"Extracted userId: {email}");
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return Unauthorized("User ID not found in token.");
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            object roleSpecificDetails = null;
+            if (user.Role == "pharmacien")
+            {
+                roleSpecificDetails = await _context.Pharmaciens.FindAsync(user.Id);
+            }
+            else if (user.Role == "medecin")
+            {
+                roleSpecificDetails = await _context.Medecins.FindAsync(user.Id);
+            }
+
+            var profile = new
+            {
+                user.UserName,
+                user.Email,
+                user.Role,
+                AdditionalDetails = roleSpecificDetails 
+            };
+
+            return Ok(profile);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
+
+
+    [Authorize]
+    [HttpGet("Demo")]
+    public IActionResult Demo()
+    {
+        return Ok("User Authenticated Successfully!");
+    }
+
 
     // JWT Token Generation
     private string GenerateJwtToken(ApplicationUser user)

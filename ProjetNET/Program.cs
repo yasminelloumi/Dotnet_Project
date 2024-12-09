@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;  // Add this for OpenApi
 using ProjetNET.Modeles;
 using ProjetNET.Modeles.Repository;
 using ProjetNET.Repositories;
@@ -18,14 +19,11 @@ builder.Services.AddDbContext<Context>(options => options.UseSqlServer(cnx));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
-//
-builder.Services.AddScoped<IMedicamentRepository, MedicamentRepository>();
 
-// Injection des dépendances
+// Add your repositories (these were already in your code)
+builder.Services.AddScoped<IMedicamentRepository, MedicamentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-//Orodoonance 
 builder.Services.AddScoped<IOrdonnanceRepository, OrdonnanceRepository>();
-//patient
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 // Configuration JWT pour l'authentification
@@ -50,12 +48,49 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+// Add Swagger with JWT support
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "JWTToken_Auth_API",
+        Version = "v1"
+    });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
 // Ajout des services MVC
 builder.Services.AddControllers();
 
 // Swagger pour la documentation API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -83,7 +118,7 @@ async Task SeedRolesAsync(IServiceProvider serviceProvider)
     using var scope = serviceProvider.CreateScope();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    var roles = new[] { "pharmacien", "medecin","admin" };
+    var roles = new[] { "pharmacien", "medecin", "admin" };
 
     foreach (var role in roles)
     {
@@ -105,4 +140,3 @@ async Task SeedRolesAsync(IServiceProvider serviceProvider)
         }
     }
 }
-
