@@ -25,6 +25,8 @@ builder.Services.AddScoped<IMedicamentRepository, MedicamentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 //Orodoonance 
 builder.Services.AddScoped<IOrdonnanceRepository, OrdonnanceRepository>();
+//patient
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 // Configuration JWT pour l'authentification
 builder.Services.AddAuthentication(options =>
