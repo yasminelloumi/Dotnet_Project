@@ -10,7 +10,7 @@ namespace ProjetNET.Modeles
         public string Description { get; set; }        
         public float Prix { get; set; }
         public int QttStock { get; set; }
-        public DateTime DateExpiration { get; set; }
+       
        
     }
 }
