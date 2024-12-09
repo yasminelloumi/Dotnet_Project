@@ -18,7 +18,7 @@ namespace ProjetNET.Modeles
         public Patient? Patient { get; set; } 
 
        
-        public int IDMedecin { get; set; }
+        public string IDMedecin { get; set; }
         [ForeignKey(nameof(IDMedecin))]
         public Medecin? Medecin { get; set; } 
 
