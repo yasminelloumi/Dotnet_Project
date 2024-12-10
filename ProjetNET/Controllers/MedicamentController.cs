@@ -72,7 +72,7 @@ namespace ProjetNET.Controllers
             existingMedicament.Description = medicament.Description;
             existingMedicament.Prix = medicament.Prix;
             existingMedicament.QttStock = medicament.QttStock;
-            existingMedicament.DateExpiration = medicament.DateExpiration;
+         
 
             try
             {
