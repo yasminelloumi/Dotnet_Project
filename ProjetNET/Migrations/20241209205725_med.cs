@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetNET.Migrations
 {
     /// <inheritdoc />
-    public partial class bdd : Migration
+    public partial class med : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -60,8 +60,7 @@ namespace ProjetNET.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Prix = table.Column<float>(type: "real", nullable: false),
-                    QttStock = table.Column<int>(type: "int", nullable: false),
-                    DateExpiration = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    QttStock = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
