@@ -35,7 +35,16 @@ namespace ProjetNET.Controllers
             {
                 return NotFound($"Patient with ID {id} not found.");
             }
-            return Ok(patient);
+
+            // Retourner le patient avec l'historique des médicaments
+            return Ok(new
+            {
+                patient.ID,
+                patient.NamePatient,
+                patient.DateOfBirth,
+                patient.MedicalHistory,
+                HistoriqueMedicaments = patient.HistoriqueMedicaments // Affichage de l'historique des médicaments
+            });
         }
 
         // POST: api/Patient
@@ -87,17 +96,30 @@ namespace ProjetNET.Controllers
         }
 
         // DELETE: api/Patient/{id}
-       // [HttpDelete("{id}")]
+        // [HttpDelete("{id}")]
         //public async Task<IActionResult> Delete(int id)
         //{
-          //  var patient = await _patientRepository.GetById(id);
-            //if (patient == null)
-            //{
-              //  return NotFound($"Patient with ID {id} not found.");
-            //}
-
-            //await _patientRepository.Delete(id);
-            //return NoContent(); // Indicate the deletion was successful.
+        //  var patient = await _patientRepository.GetById(id);
+        //if (patient == null)
+        //{
+        //  return NotFound($"Patient with ID {id} not found.");
         //}
+
+        //await _patientRepository.Delete(id);
+        //return NoContent(); // Indicate the deletion was successful.
+        //}
+
+        [HttpGet("GetMedicaments/{patientId}")]
+        public IActionResult GetMedicaments(int patientId)
+        {
+            var medicaments = _patientRepository.GetMedicamentsByPatientId(patientId);
+
+            if (medicaments == null || !medicaments.Any())
+            {
+                return NotFound("No medicaments found for this patient.");
+            }
+
+            return Ok(medicaments);
+        }
     }
 }

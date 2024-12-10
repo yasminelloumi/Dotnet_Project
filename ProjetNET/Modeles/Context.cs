@@ -38,6 +38,14 @@ namespace ProjetNET.Modeles
                 .WithOne()
                 .HasForeignKey<Pharmacien>(p => p.Id)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //Historique 
+            modelBuilder.Entity<Ordonnance>()
+            .HasMany(o => o.Medicaments)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("OrdonnanceMedicaments"));
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 namespace ProjetNET.Modeles
 {
     public class Patient
@@ -8,6 +9,11 @@ namespace ProjetNET.Modeles
         public string NamePatient { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string MedicalHistory { get; set; }
+       
+        public List<Ordonnance> Ordonnances { get; set; } = new List<Ordonnance>();
+
+        
+
     }
 
 }

@@ -50,5 +50,15 @@ namespace ProjetNET.Modeles.Repository
             _context.Patients.Update(patient);
             await _context.SaveChangesAsync();
         }
+        //historique
+        public List<Medicament> GetMedicamentsByPatientId(int patientId)
+        {
+            return _context.Ordonnances
+                           .Where(o => o.IDPatient == patientId)
+                           .Include(o => o.Medicaments)
+                           .SelectMany(o => o.Medicaments)
+                           .Distinct() // Évite les doublons
+                           .ToList();
+        }
     }
 }

@@ -40,13 +40,28 @@ namespace ProjetNET.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Ordonnance ordonnance)
         {
-            var newOrdonnance = await ordonnanceRepository.Add(ordonnance);
-            if (newOrdonnance == null)
+            if (ordonnance == null)
             {
-                return BadRequest("Problem occurred while creating ordonnance.");
+                return BadRequest("Invalid ordonnance data.");
             }
 
-            return CreatedAtAction(nameof(GetById), new { id = newOrdonnance.IDOrdonnance }, newOrdonnance);
+            // Créez l'ordonnance dans la base de données
+            await ordonnanceRepository.Add(ordonnance);
+
+            // Récupérer le nom du patient et les noms des médicaments liés
+            var patient = ordonnance.Patient; // Le patient est déjà lié à l'ordonnance
+            var medicaments = ordonnance.Medicaments; // Liste des médicaments associés à l'ordonnance
+
+            // Construire une réponse avec les noms du patient et des médicaments
+            var result = new
+            {
+                OrdonnanceId = ordonnance.IDOrdonnance,
+                Date = ordonnance.Date,
+                PatientNom = patient?.NamePatient, 
+                Medicaments = medicaments?.Select(m => m.Name) // Liste des noms des médicaments
+            };
+
+            return Ok(result);
         }
 
         // PUT: api/Ordonnance/{id}
