@@ -100,5 +100,17 @@ namespace ProjetNET.Controllers
             await medicamentRepository.Delete(id);
             return NoContent(); // Indicate the deletion was successful.
         }
+
+        [HttpGet("patient/{patientId}")]
+        public async Task<IActionResult> GetMedicamentsByPatientId(int patientId)
+        {
+            var medicaments = await medicamentRepository.GetMedicamentsByPatientIdAsync(patientId);
+            if (medicaments == null || !medicaments.Any())
+            {
+                return NotFound("No medicaments found for this patient.");
+            }
+
+            return Ok(medicaments);
+        }
     }
 }

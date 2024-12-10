@@ -44,6 +44,15 @@ namespace ProjetNET.Modeles.Repository
             context.Medicaments.Update(medicament);
             await context.SaveChangesAsync();
         }
+
+        public async Task<List<Medicament>> GetMedicamentsByPatientIdAsync(int patientId)
+        {
+            return await context.Ordonnances
+                .Where(o => o.IDPatient == patientId)
+                .SelectMany(o => o.Medicaments)
+                .Distinct()
+                .ToListAsync();
+        }
     }
 }
 // add list Medicaments to context!!!!!!!! dont forget 

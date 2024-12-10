@@ -10,6 +10,10 @@ namespace ProjetNET.Modeles
         public DbSet<Medicament> Medicaments { get; set; }
         public DbSet<Pharmacien> Pharmaciens { get; set; }
         public DbSet<Medecin> Medecins { get; set; }
+        public DbSet<Ordonnance> Ordonnances { get; set; }
+
+        
+
 
         // Enable lazy loading proxies
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -36,6 +40,10 @@ namespace ProjetNET.Modeles
                 .WithOne()
                 .HasForeignKey<Pharmacien>(p => p.Id)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Ordonnance>()
+               .HasMany(o => o.Medicaments)
+               .WithMany(m => m.Ordonnances);
         }
     }
 }
