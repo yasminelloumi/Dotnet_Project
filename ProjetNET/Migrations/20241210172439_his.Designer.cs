@@ -12,8 +12,8 @@ using ProjetNET.Modeles;
 namespace ProjetNET.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241209095638_ord")]
-    partial class ord
+    [Migration("20241210172439_his")]
+    partial class his
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace ProjetNET.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MedicamentOrdonnance", b =>
+                {
+                    b.Property<int>("MedicamentsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdonnanceIDOrdonnance")
+                        .HasColumnType("int");
+
+                    b.HasKey("MedicamentsId", "OrdonnanceIDOrdonnance");
+
+                    b.HasIndex("OrdonnanceIDOrdonnance");
+
+                    b.ToTable("OrdonnanceMedicaments", (string)null);
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -249,9 +264,6 @@ namespace ProjetNET.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateExpiration")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -260,9 +272,6 @@ namespace ProjetNET.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OrdonnanceIDOrdonnance")
-                        .HasColumnType("int");
-
                     b.Property<float>("Prix")
                         .HasColumnType("real");
 
@@ -270,8 +279,6 @@ namespace ProjetNET.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrdonnanceIDOrdonnance");
 
                     b.ToTable("Medicaments");
                 });
@@ -341,6 +348,21 @@ namespace ProjetNET.Migrations
                     b.ToTable("Pharmaciens");
                 });
 
+            modelBuilder.Entity("MedicamentOrdonnance", b =>
+                {
+                    b.HasOne("ProjetNET.Modeles.Medicament", null)
+                        .WithMany()
+                        .HasForeignKey("MedicamentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetNET.Modeles.Ordonnance", null)
+                        .WithMany()
+                        .HasForeignKey("OrdonnanceIDOrdonnance")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -403,13 +425,6 @@ namespace ProjetNET.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ProjetNET.Modeles.Medicament", b =>
-                {
-                    b.HasOne("ProjetNET.Modeles.Ordonnance", null)
-                        .WithMany("Medicaments")
-                        .HasForeignKey("OrdonnanceIDOrdonnance");
-                });
-
             modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
                 {
                     b.HasOne("ProjetNET.Modeles.Medecin", "Medecin")
@@ -419,7 +434,7 @@ namespace ProjetNET.Migrations
                         .IsRequired();
 
                     b.HasOne("ProjetNET.Modeles.Patient", "Patient")
-                        .WithMany()
+                        .WithMany("Ordonnances")
                         .HasForeignKey("IDPatient")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -440,9 +455,9 @@ namespace ProjetNET.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
+            modelBuilder.Entity("ProjetNET.Modeles.Patient", b =>
                 {
-                    b.Navigation("Medicaments");
+                    b.Navigation("Ordonnances");
                 });
 #pragma warning restore 612, 618
         }

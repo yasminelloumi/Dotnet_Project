@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetNET.Migrations
 {
     /// <inheritdoc />
-    public partial class med : Migration
+    public partial class his : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -65,6 +65,21 @@ namespace ProjetNET.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Medicaments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NamePatient = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MedicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,6 +224,57 @@ namespace ProjetNET.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Ordonnances",
+                columns: table => new
+                {
+                    IDOrdonnance = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IDPatient = table.Column<int>(type: "int", nullable: false),
+                    IDMedecin = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ordonnances", x => x.IDOrdonnance);
+                    table.ForeignKey(
+                        name: "FK_Ordonnances_Medecins_IDMedecin",
+                        column: x => x.IDMedecin,
+                        principalTable: "Medecins",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ordonnances_Patients_IDPatient",
+                        column: x => x.IDPatient,
+                        principalTable: "Patients",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrdonnanceMedicaments",
+                columns: table => new
+                {
+                    MedicamentsId = table.Column<int>(type: "int", nullable: false),
+                    OrdonnanceIDOrdonnance = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrdonnanceMedicaments", x => new { x.MedicamentsId, x.OrdonnanceIDOrdonnance });
+                    table.ForeignKey(
+                        name: "FK_OrdonnanceMedicaments_Medicaments_MedicamentsId",
+                        column: x => x.MedicamentsId,
+                        principalTable: "Medicaments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrdonnanceMedicaments_Ordonnances_OrdonnanceIDOrdonnance",
+                        column: x => x.OrdonnanceIDOrdonnance,
+                        principalTable: "Ordonnances",
+                        principalColumn: "IDOrdonnance",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -247,6 +313,21 @@ namespace ProjetNET.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdonnanceMedicaments_OrdonnanceIDOrdonnance",
+                table: "OrdonnanceMedicaments",
+                column: "OrdonnanceIDOrdonnance");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ordonnances_IDMedecin",
+                table: "Ordonnances",
+                column: "IDMedecin");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ordonnances_IDPatient",
+                table: "Ordonnances",
+                column: "IDPatient");
         }
 
         /// <inheritdoc />
@@ -268,16 +349,25 @@ namespace ProjetNET.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Medecins");
-
-            migrationBuilder.DropTable(
-                name: "Medicaments");
+                name: "OrdonnanceMedicaments");
 
             migrationBuilder.DropTable(
                 name: "Pharmaciens");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Medicaments");
+
+            migrationBuilder.DropTable(
+                name: "Ordonnances");
+
+            migrationBuilder.DropTable(
+                name: "Medecins");
+
+            migrationBuilder.DropTable(
+                name: "Patients");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

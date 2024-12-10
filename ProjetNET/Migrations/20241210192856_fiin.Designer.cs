@@ -12,8 +12,8 @@ using ProjetNET.Modeles;
 namespace ProjetNET.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241209205725_med")]
-    partial class med
+    [Migration("20241210192856_fiin")]
+    partial class fiin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace ProjetNET.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MedicamentOrdonnance", b =>
+                {
+                    b.Property<int>("MedicamentsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdonnanceIDOrdonnance")
+                        .HasColumnType("int");
+
+                    b.HasKey("MedicamentsId", "OrdonnanceIDOrdonnance");
+
+                    b.HasIndex("OrdonnanceIDOrdonnance");
+
+                    b.ToTable("OrdonnanceMedicaments", (string)null);
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -257,6 +272,9 @@ namespace ProjetNET.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PatientID")
+                        .HasColumnType("int");
+
                     b.Property<float>("Prix")
                         .HasColumnType("real");
 
@@ -265,7 +283,60 @@ namespace ProjetNET.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PatientID");
+
                     b.ToTable("Medicaments");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
+                {
+                    b.Property<int>("IDOrdonnance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IDOrdonnance"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IDMedecin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("IDPatient")
+                        .HasColumnType("int");
+
+                    b.HasKey("IDOrdonnance");
+
+                    b.HasIndex("IDMedecin");
+
+                    b.HasIndex("IDPatient");
+
+                    b.ToTable("Ordonnances");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.Patient", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MedicalHistory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NamePatient")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Pharmacien", b =>
@@ -280,6 +351,21 @@ namespace ProjetNET.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Pharmaciens");
+                });
+
+            modelBuilder.Entity("MedicamentOrdonnance", b =>
+                {
+                    b.HasOne("ProjetNET.Modeles.Medicament", null)
+                        .WithMany()
+                        .HasForeignKey("MedicamentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetNET.Modeles.Ordonnance", null)
+                        .WithMany()
+                        .HasForeignKey("OrdonnanceIDOrdonnance")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -344,6 +430,32 @@ namespace ProjetNET.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ProjetNET.Modeles.Medicament", b =>
+                {
+                    b.HasOne("ProjetNET.Modeles.Patient", null)
+                        .WithMany("Medicaments")
+                        .HasForeignKey("PatientID");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
+                {
+                    b.HasOne("ProjetNET.Modeles.Medecin", "Medecin")
+                        .WithMany()
+                        .HasForeignKey("IDMedecin")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetNET.Modeles.Patient", "Patient")
+                        .WithMany("Ordonnances")
+                        .HasForeignKey("IDPatient")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medecin");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("ProjetNET.Modeles.Pharmacien", b =>
                 {
                     b.HasOne("ProjetNET.Modeles.ApplicationUser", "User")
@@ -353,6 +465,13 @@ namespace ProjetNET.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.Patient", b =>
+                {
+                    b.Navigation("Medicaments");
+
+                    b.Navigation("Ordonnances");
                 });
 #pragma warning restore 612, 618
         }

@@ -22,6 +22,21 @@ namespace ProjetNET.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MedicamentOrdonnance", b =>
+                {
+                    b.Property<int>("MedicamentsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdonnanceIDOrdonnance")
+                        .HasColumnType("int");
+
+                    b.HasKey("MedicamentsId", "OrdonnanceIDOrdonnance");
+
+                    b.HasIndex("OrdonnanceIDOrdonnance");
+
+                    b.ToTable("OrdonnanceMedicaments", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -254,7 +269,7 @@ namespace ProjetNET.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OrdonnanceIDOrdonnance")
+                    b.Property<int?>("PatientID")
                         .HasColumnType("int");
 
                     b.Property<float>("Prix")
@@ -265,7 +280,7 @@ namespace ProjetNET.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrdonnanceIDOrdonnance");
+                    b.HasIndex("PatientID");
 
                     b.ToTable("Medicaments");
                 });
@@ -335,6 +350,21 @@ namespace ProjetNET.Migrations
                     b.ToTable("Pharmaciens");
                 });
 
+            modelBuilder.Entity("MedicamentOrdonnance", b =>
+                {
+                    b.HasOne("ProjetNET.Modeles.Medicament", null)
+                        .WithMany()
+                        .HasForeignKey("MedicamentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetNET.Modeles.Ordonnance", null)
+                        .WithMany()
+                        .HasForeignKey("OrdonnanceIDOrdonnance")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -399,9 +429,9 @@ namespace ProjetNET.Migrations
 
             modelBuilder.Entity("ProjetNET.Modeles.Medicament", b =>
                 {
-                    b.HasOne("ProjetNET.Modeles.Ordonnance", null)
+                    b.HasOne("ProjetNET.Modeles.Patient", null)
                         .WithMany("Medicaments")
-                        .HasForeignKey("OrdonnanceIDOrdonnance");
+                        .HasForeignKey("PatientID");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
@@ -413,7 +443,7 @@ namespace ProjetNET.Migrations
                         .IsRequired();
 
                     b.HasOne("ProjetNET.Modeles.Patient", "Patient")
-                        .WithMany()
+                        .WithMany("Ordonnances")
                         .HasForeignKey("IDPatient")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -434,9 +464,11 @@ namespace ProjetNET.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
+            modelBuilder.Entity("ProjetNET.Modeles.Patient", b =>
                 {
                     b.Navigation("Medicaments");
+
+                    b.Navigation("Ordonnances");
                 });
 #pragma warning restore 612, 618
         }

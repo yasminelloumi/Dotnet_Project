@@ -43,7 +43,6 @@ namespace ProjetNET.Controllers
                 patient.NamePatient,
                 patient.DateOfBirth,
                 patient.MedicalHistory,
-                HistoriqueMedicaments = patient.HistoriqueMedicaments // Affichage de l'historique des médicaments
             });
         }
 
