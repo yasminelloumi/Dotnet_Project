@@ -3,7 +3,7 @@
     public class CreateOrdonnanceDTO
     {
         public int PatientId { get; set; }
-        public string MedecinId { get; set; }
+        public string MedecinName { get; set; }
         public List<int> MedicamentIds { get; set; } // Liste des IDs des médicaments à inclure
     }
 

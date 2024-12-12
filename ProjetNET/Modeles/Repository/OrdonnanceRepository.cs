@@ -15,7 +15,7 @@ namespace ProjetNET.Modeles.Repository
         public async Task<OrdonnanceResponseDTO> CreateOrdonnance(CreateOrdonnanceDTO dto)
         {
             // Charger les entités nécessaires
-            var medecin = await context.Medecins.Include(m => m.User).FirstOrDefaultAsync(m => m.Id == dto.MedecinId);
+            var medecin = await context.Medecins.Include(m => m.User).FirstOrDefaultAsync(m => m.User.UserName == dto.MedecinName);
             var patient = await context.Patients.FirstOrDefaultAsync(p => p.ID == dto.PatientId);
             var medicaments = await context.Medicaments.Where(m => dto.MedicamentIds.Contains(m.Id)).ToListAsync();
 
