@@ -100,5 +100,35 @@ namespace ProjetNET.Controllers
             await medicamentRepository.Delete(id);
             return NoContent(); // Indicate the deletion was successful.
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return BadRequest("Search term is required.");
+            }
+
+            // Recherche des médicaments
+            var medicaments = await medicamentRepository.SearchMedicament(searchTerm);
+
+            if (medicaments == null || !medicaments.Any())
+            {
+                return NotFound("No medicaments found matching the search term.");
+            }
+
+            var medicamentDTOs = medicaments.Select(m => new
+            {
+                m.Id,
+                m.Name,
+                m.Description,
+                m.Prix,
+                m.QttStock
+            });
+
+            return Ok(medicamentDTOs);
+        }
+
+
     }
 }

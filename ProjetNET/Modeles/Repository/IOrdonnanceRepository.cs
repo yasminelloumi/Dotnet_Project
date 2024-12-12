@@ -9,5 +9,6 @@ namespace ProjetNET.Modeles.Repository
         Task<IEnumerable<OrdonnanceResponseDTO>> GetAllOrdonnances(); // Nouvelle méthode
         Task<bool> DeleteOrdonnance(int id); // Nouvelle méthode
         Task<OrdonnanceResponseDTO> UpdateOrdonnance(int id, UpdateOrdonnanceDTO dto); // Nouvelle méthode
+        Task<List<Ordonnance>> SearchOrdonnances(string medecinId, int? patientId);
     }
 }

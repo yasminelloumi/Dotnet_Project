@@ -63,6 +63,35 @@ namespace ProjetNET.Modeles.Repository
                           .Distinct()
                           .ToList();
         }
+        //methode recherche
+        public async Task<List<Patient>> SearchPatients(string searchTerm)
+        {
+            // Recherche par nom ou date de naissance
+            var query = _context.Patients.AsQueryable();
+
+            // Si le terme de recherche est un nombre, on suppose que c'est une date ou ID
+            if (int.TryParse(searchTerm, out int id))
+            {
+                // Recherche par ID
+                query = query.Where(p => p.ID == id);
+            }
+            else if (DateTime.TryParse(searchTerm, out DateTime birthDate))
+            {
+                // Recherche par date de naissance
+                query = query.Where(p => p.DateOfBirth == birthDate);
+            }
+            else
+            {
+                // Recherche par nom
+                query = query.Where(p => p.NamePatient.Contains(searchTerm));
+            }
+
+            return await query
+                        .Include(p => p.Ordonnances)
+                            .ThenInclude(o => o.Medicaments)
+                        .ToListAsync();
+        }
+
 
     }
 }

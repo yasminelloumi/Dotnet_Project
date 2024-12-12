@@ -135,9 +135,31 @@ namespace ProjetNET.Modeles.Repository
                 Medicaments = medicaments.Select(m => m.Name).ToList()
             };
         }
+        public async Task<List<Ordonnance>> SearchOrdonnances(string medecinId, int? patientId)
+        {
+            var query = context.Ordonnances.AsQueryable();
 
+            // Recherche par MedecinId
+            if (!string.IsNullOrEmpty(medecinId))
+            {
+                query = query.Where(o => o.MedecinId.Contains(medecinId));
+            }
+
+            // Recherche par PatientId
+            if (patientId.HasValue)
+            {
+                query = query.Where(o => o.PatientId == patientId.Value);
+            }
+
+            // Inclure les entités associées, si nécessaire
+            return await query
+                        .Include(o => o.Patient)
+                        .Include(o => o.Medecin)
+                        .Include(o => o.Medicaments)
+                        .ToListAsync();
+        }
     }
-
+    
 
 
 

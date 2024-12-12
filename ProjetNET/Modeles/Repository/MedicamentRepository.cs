@@ -44,6 +44,27 @@ namespace ProjetNET.Modeles.Repository
             context.Medicaments.Update(medicament);
             await context.SaveChangesAsync();
         }
+
+        // Méthode de recherche par nom ou ID
+        public async Task<List<Medicament>> SearchMedicament(string searchTerm)
+        {
+            var query = context.Medicaments.AsQueryable();
+
+            // Si le terme de recherche est un nombre, on suppose que c'est un ID
+            if (int.TryParse(searchTerm, out int id))
+            {
+                // Recherche par ID
+                query = query.Where(m => m.Id == id);
+            }
+            else
+            {
+                // Recherche par nom
+                query = query.Where(m => m.Name.Contains(searchTerm));
+            }
+
+            return await query.ToListAsync();
+        }
+
     }
 }
 // add list Medicaments to context!!!!!!!! dont forget 

@@ -101,9 +101,35 @@ namespace ProjetNET.Controllers
             return NoContent(); // Update successful
         }
 
-        
 
-        
+        // GET: api/Patient/search?term={searchTerm}
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return BadRequest("Search term is required.");
+            }
+
+            var patients = await _patientRepository.SearchPatients(searchTerm);
+
+            if (patients == null || !patients.Any())
+            {
+                return NotFound("No patients found matching the search term.");
+            }
+
+            var patientDTOs = patients.Select(p => new
+            {
+                p.ID,
+                p.NamePatient,
+                p.DateOfBirth,
+                Historique = p.Historique // Inclure l'historique des médicaments
+            });
+
+            return Ok(patientDTOs);
+        }
+
+
 
         [HttpGet("GetMedicaments/{patientId}")]
         public async Task<IActionResult> GetMedicaments(int patientId)

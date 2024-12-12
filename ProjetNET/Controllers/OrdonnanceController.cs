@@ -91,6 +91,27 @@ namespace ProjetNET.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        // Méthode GET pour rechercher des ordonnances par des critères
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchOrdonnances([FromQuery] string medecinId, [FromQuery] int? patientId)
+        {
+            // Vérifier si aucun critère n'est donné
+            if (string.IsNullOrEmpty(medecinId) && patientId == null)
+            {
+                return BadRequest("At least one search criterion (MedecinId or PatientId) must be provided.");
+            }
+
+            var ordonnances = await ordonnanceRepository.SearchOrdonnances(medecinId, patientId);
+
+            if (ordonnances == null || !ordonnances.Any())
+            {
+                return NotFound("No ordonnances found matching the search criteria.");
+            }
+
+            return Ok(ordonnances);
+        }
+
+
 
 
 

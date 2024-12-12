@@ -7,5 +7,6 @@
         Task<Medicament> Add(Medicament medicament);
         Task Update(Medicament medicament);
         Task Delete (int id);
+        Task<List<Medicament>> SearchMedicament(string searchTerm);
             }
 }
