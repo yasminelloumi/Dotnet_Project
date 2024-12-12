@@ -21,10 +21,13 @@ namespace ProjetNET.Modeles.Repository
             return result.Entity;
         }
 
-        
+
         public async Task<List<Patient>> GetAll()
         {
-            return await _context.Patients.ToListAsync();
+            return await _context.Patients
+                .Include(p => p.Ordonnances)
+                    .ThenInclude(o => o.Medicaments)
+                .ToListAsync();
         }
 
         // Retrieve a patient by ID

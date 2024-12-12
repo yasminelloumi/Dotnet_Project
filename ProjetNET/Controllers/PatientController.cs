@@ -23,7 +23,16 @@ namespace ProjetNET.Controllers
         public async Task<IActionResult> GetAll()
         {
             var patients = await _patientRepository.GetAll();
-            return Ok(patients);
+
+            var patientDTOs = patients.Select(p => new
+            {
+                p.ID,
+                p.NamePatient,
+                p.DateOfBirth,
+                Historique = p.Historique // Propriété calculée qui liste les médicaments
+            });
+
+            return Ok(patientDTOs);
         }
 
         // GET: api/Patient/{id}
