@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjetNET.DTO;
 
 namespace ProjetNET.Modeles.Repository
 {
@@ -11,49 +12,133 @@ namespace ProjetNET.Modeles.Repository
             this.context = context;
         }
 
-        public async Task<Ordonnance> Add(Ordonnance ordonnance)
+        public async Task<OrdonnanceResponseDTO> CreateOrdonnance(CreateOrdonnanceDTO dto)
         {
-            var result = await context.Ordonnances.AddAsync(ordonnance);
-            await context.SaveChangesAsync();
-            return result.Entity;
-        }       
+            // Charger les entités nécessaires
+            var medecin = await context.Medecins.Include(m => m.User).FirstOrDefaultAsync(m => m.Id == dto.MedecinId);
+            var patient = await context.Patients.FirstOrDefaultAsync(p => p.ID == dto.PatientId);
+            var medicaments = await context.Medicaments.Where(m => dto.MedicamentIds.Contains(m.Id)).ToListAsync();
 
-    
-        public async Task<List<Ordonnance>> GetAll()
-        {
-            List<Ordonnance> ordonnances = await context.Ordonnances
-                .Include(o => o.Patient) // Inclure les détails du patient
-                .Include(o => o.Medecin) // Inclure les détails du médecin
-                .Include(o => o.Medicaments) // Inclure les médicaments associés
-                .ToListAsync();
-            return ordonnances;
-        }
-
-    
-        public async Task<Ordonnance> GetById(int id)
-        {
-            Ordonnance ordonnance = await context.Ordonnances
-                .Include(o => o.Patient)
-                .Include(o => o.Medecin)
-                .Include(o => o.Medicaments)
-                .FirstOrDefaultAsync(o => o.IDOrdonnance == id);
-            return ordonnance;
-        }
-
-        // Mettre à jour une ordonnance existante
-        public async Task Update(Ordonnance ordonnance)
-        {
-            var existingOrdonnance = await context.Ordonnances.FindAsync(ordonnance.IDOrdonnance);
-            if (existingOrdonnance != null)
+            if (medecin == null || patient == null || !medicaments.Any())
             {
-                existingOrdonnance.Date = ordonnance.Date;
-                existingOrdonnance.IDPatient = ordonnance.IDPatient;
-                existingOrdonnance.IDMedecin = ordonnance.IDMedecin;
-                existingOrdonnance.Medicaments = ordonnance.Medicaments;
-
-                context.Ordonnances.Update(existingOrdonnance);
-                await context.SaveChangesAsync();
+                throw new ArgumentException("Invalid data for creating ordonnance.");
             }
+
+            // Créer l'ordonnance
+            var ordonnance = new Ordonnance
+            {
+                Medecin = medecin,
+                Patient = patient,
+                Medicaments = medicaments
+            };
+
+            context.Ordonnances.Add(ordonnance);
+            await context.SaveChangesAsync();
+
+            // Retourner une réponse DTO
+            return new OrdonnanceResponseDTO
+            {
+                Id = ordonnance.Id,
+                MedecinName = medecin.User.UserName,
+                PatientName = patient.NamePatient,
+                Medicaments = medicaments.Select(m => m.Name).ToList()
+            };
         }
+
+        public async Task<OrdonnanceResponseDTO> GetOrdonnanceAsDTO(int id)
+        {
+            var ordonnance = await context.Ordonnances
+                .Include(o => o.Medecin)
+                    .ThenInclude(m => m.User) // Charger les données utilisateur du médecin
+                .Include(o => o.Patient)
+                .Include(o => o.Medicaments)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (ordonnance == null)
+            {
+                return null;
+            }
+
+            return new OrdonnanceResponseDTO
+            {
+                Id = ordonnance.Id,
+                MedecinName = ordonnance.Medecin.User.UserName,
+                PatientName = ordonnance.Patient.NamePatient,
+                Medicaments = ordonnance.Medicaments.Select(m => m.Name).ToList()
+            };
+        }
+        // Méthode pour récupérer toutes les ordonnances
+        public async Task<IEnumerable<OrdonnanceResponseDTO>> GetAllOrdonnances()
+        {
+            var ordonnances = await context.Ordonnances
+                .Include(o => o.Medecin)
+                    .ThenInclude(m => m.User)
+                .Include(o => o.Patient)
+                .Include(o => o.Medicaments)
+                .ToListAsync();
+
+            return ordonnances.Select(o => new OrdonnanceResponseDTO
+            {
+                Id = o.Id,
+                MedecinName = o.Medecin.User.UserName,
+                PatientName = o.Patient.NamePatient,
+                Medicaments = o.Medicaments.Select(m => m.Name).ToList()
+            });
+        }
+
+        // Méthode pour supprimer une ordonnance
+        public async Task<bool> DeleteOrdonnance(int id)
+        {
+            var ordonnance = await context.Ordonnances.FindAsync(id);
+            if (ordonnance == null)
+            {
+                return false;
+            }
+
+            context.Ordonnances.Remove(ordonnance);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        // Méthode pour mettre à jour une ordonnance
+        public async Task<OrdonnanceResponseDTO> UpdateOrdonnance(int id, UpdateOrdonnanceDTO dto)
+        {
+            var ordonnance = await context.Ordonnances
+                .Include(o => o.Medicaments)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (ordonnance == null)
+            {
+                return null;
+            }
+
+            // Charger les nouvelles données
+            var patient = await context.Patients.FirstOrDefaultAsync(p => p.ID == dto.PatientId);
+            var medicaments = await context.Medicaments.Where(m => dto.MedicamentIds.Contains(m.Id)).ToListAsync();
+
+            if (patient == null || !medicaments.Any())
+            {
+                throw new ArgumentException("Invalid data for updating ordonnance.");
+            }
+
+            // Mettre à jour les propriétés
+            ordonnance.Patient = patient;
+            ordonnance.Medicaments = medicaments;
+
+            await context.SaveChangesAsync();
+
+            return new OrdonnanceResponseDTO
+            {
+                Id = ordonnance.Id,
+                MedecinName = ordonnance.Medecin.User.UserName,
+                PatientName = ordonnance.Patient.NamePatient,
+                Medicaments = medicaments.Select(m => m.Name).ToList()
+            };
+        }
+
     }
+
+
+
+
 }

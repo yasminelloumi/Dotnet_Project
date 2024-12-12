@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ProjetNET.Modeles
 {
@@ -11,7 +12,8 @@ namespace ProjetNET.Modeles
         public string Description { get; set; }        
         public float Prix { get; set; }
         public int QttStock { get; set; }
-       
-       
+        [JsonIgnore]
+        public List<Ordonnance> Ordonnances { get; set; } = new List<Ordonnance>();
+
     }
 }

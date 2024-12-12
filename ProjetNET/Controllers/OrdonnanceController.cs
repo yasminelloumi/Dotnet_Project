@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetNET.Modeles.Repository;
 using ProjetNET.Modeles;
+using ProjetNET.DTO;
 
 namespace ProjetNET.Controllers
 {
@@ -16,79 +17,85 @@ namespace ProjetNET.Controllers
             this.ordonnanceRepository = ordonnanceRepository;
         }
 
-        // GET: api/Ordonnance
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var ordonnances = await ordonnanceRepository.GetAll();
-            return Ok(ordonnances);
-        }
-
-        // GET: api/Ordonnance/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var ordonnance = await ordonnanceRepository.GetById(id);
-            if (ordonnance == null)
-            {
-                return NotFound($"Ordonnance with ID {id} not found.");
-            }
-            return Ok(ordonnance);
-        }
-
-        // POST: api/Ordonnance
+       
         [HttpPost]
-        public async Task<IActionResult> Create(Ordonnance ordonnance)
+        public async Task<IActionResult> CreateOrdonnance([FromBody] CreateOrdonnanceDTO dto)
         {
-            if (ordonnance == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid ordonnance data.");
-            }
-
-            // Créez l'ordonnance dans la base de données
-            await ordonnanceRepository.Add(ordonnance);
-
-            // Récupérer le nom du patient et les noms des médicaments liés
-            var patient = ordonnance.Patient; // Le patient est déjà lié à l'ordonnance
-            var medicaments = ordonnance.Medicaments; // Liste des médicaments associés à l'ordonnance
-
-            // Construire une réponse avec les noms du patient et des médicaments
-            var result = new
-            {
-                OrdonnanceId = ordonnance.IDOrdonnance,
-                Date = ordonnance.Date,
-                PatientNom = patient?.NamePatient, 
-                Medicaments = medicaments?.Select(m => m.Name) // Liste des noms des médicaments
-            };
-
-            return Ok(result);
-        }
-
-        // PUT: api/Ordonnance/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Ordonnance ordonnance)
-        {
-            // Ensure the ID in the route matches the ID in the model
-            ordonnance.IDOrdonnance = id;
-
-            var existingOrdonnance = await ordonnanceRepository.GetById(id);
-            if (existingOrdonnance == null)
-            {
-                return NotFound($"Ordonnance with ID {id} not found.");
+                return BadRequest(ModelState);
             }
 
             try
             {
-                await ordonnanceRepository.Update(ordonnance);
+                var response = await ordonnanceRepository.CreateOrdonnance(dto);
+                return CreatedAtAction(nameof(GetOrdonnance), new { id = response.Id }, response);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return BadRequest(ex.Message);
             }
-
-            return NoContent(); // Update successful
         }
 
-        
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrdonnance(int id)
+        {
+            var ordonnance = await ordonnanceRepository.GetOrdonnanceAsDTO(id);
+            if (ordonnance == null)
+            {
+                return NotFound("Ordonnance not found.");
+            }
+            return Ok(ordonnance);
+        }
+
+        // Méthode GET pour récupérer toutes les ordonnances
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrdonnances()
+        {
+            var ordonnances = await ordonnanceRepository.GetAllOrdonnances();
+            return Ok(ordonnances);
+        }
+
+        // Méthode DELETE pour supprimer une ordonnance
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrdonnance(int id)
+        {
+            var success = await ordonnanceRepository.DeleteOrdonnance(id);
+            if (!success)
+            {
+                return NotFound("Ordonnance not found.");
+            }
+            return NoContent();
+        }
+
+        // Méthode PUT pour mettre à jour une ordonnance
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrdonnance(int id, [FromBody] UpdateOrdonnanceDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var response = await ordonnanceRepository.UpdateOrdonnance(id, dto);
+                if (response == null)
+                {
+                    return NotFound("Ordonnance not found.");
+                }
+                return Ok(response);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+
     }
+
 }

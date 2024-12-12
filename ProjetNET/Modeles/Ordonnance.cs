@@ -8,24 +8,14 @@ namespace ProjetNET.Modeles
 {
     public class Ordonnance
     {
-        [Key]
-        public int IDOrdonnance { get; set; } 
+        public int Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public int PatientId { get; set; }
+        public Patient Patient { get; set; }
 
-    
-        public int IDPatient { get; set; }
-        [ForeignKey(nameof(IDPatient))]
-        [JsonIgnore]
-        public Patient? Patient { get; set; }
+        public string MedecinId { get; set; }
+        public Medecin Medecin { get; set; }
 
-      
-        public string IDMedecin { get; set; }
-        [ForeignKey(nameof(IDMedecin))]
-      
-        public Medecin? Medecin { get; set; } 
-
-        // List of associated Medicaments (many-to-many relationship)
-        public List<Medicament> Medicaments { get; set; } = new List<Medicament>();
+        public ICollection<Medicament> Medicaments { get; set; } = new List<Medicament>();
     }
 }

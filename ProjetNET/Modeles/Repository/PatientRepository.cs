@@ -21,18 +21,7 @@ namespace ProjetNET.Modeles.Repository
             return result.Entity;
         }
 
-        // Delete a patient by ID
-       // public async Task Delete(int id)
-        //{
-          //  var patient = await _context.Patients.FindAsync(id);
-            //if (patient != null)
-            //{
-              //  _context.Patients.Remove(patient);
-                //await _context.SaveChangesAsync();
-            //}
-        //}
-
-        // Retrieve all patients
+        
         public async Task<List<Patient>> GetAll()
         {
             return await _context.Patients.ToListAsync();
@@ -50,15 +39,27 @@ namespace ProjetNET.Modeles.Repository
             _context.Patients.Update(patient);
             await _context.SaveChangesAsync();
         }
-        //historique
-        public List<Medicament> GetMedicamentsByPatientId(int patientId)
+
+        //hist
+        public async Task<List<Medicament>> GetMedicamentsByPatientId(int patientId)
         {
-            return _context.Ordonnances
-                           .Where(o => o.IDPatient == patientId)
-                           .Include(o => o.Medicaments)
-                           .SelectMany(o => o.Medicaments)
-                           .Distinct() // Évite les doublons
-                           .ToList();
+            // Récupérez le patient avec ses ordonnances et leurs médicaments
+            var patient = await _context.Patients
+                .Include(p => p.Ordonnances)
+                .ThenInclude(o => o.Medicaments)
+                .FirstOrDefaultAsync(p => p.ID == patientId);
+
+            if (patient == null)
+            {
+                return null; // Patient introuvable
+            }
+
+            // Récupérez tous les médicaments via les ordonnances
+            return patient.Ordonnances
+                          .SelectMany(o => o.Medicaments)
+                          .Distinct()
+                          .ToList();
         }
+
     }
 }

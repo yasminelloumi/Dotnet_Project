@@ -40,12 +40,16 @@ namespace ProjetNET.Modeles
                 .OnDelete(DeleteBehavior.Cascade);
 
             //Historique 
+            // Relation Patient -> Ordonnance
             modelBuilder.Entity<Ordonnance>()
-            .HasMany(o => o.Medicaments)
-            .WithMany()
-            .UsingEntity(j => j.ToTable("OrdonnanceMedicaments"));
+                .HasOne(o => o.Patient)
+                .WithMany(p => p.Ordonnances);
+               
 
-            base.OnModelCreating(modelBuilder);
+            // Relation Ordonnance -> Medicaments (many-to-many)
+            modelBuilder.Entity<Ordonnance>()
+                .HasMany(o => o.Medicaments)
+                .WithMany(m => m.Ordonnances);
         }
     }
 }

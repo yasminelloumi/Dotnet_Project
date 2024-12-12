@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetNET.Migrations
 {
     /// <inheritdoc />
-    public partial class his : Migration
+    public partial class fini : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -74,8 +74,7 @@ namespace ProjetNET.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NamePatient = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MedicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -228,50 +227,49 @@ namespace ProjetNET.Migrations
                 name: "Ordonnances",
                 columns: table => new
                 {
-                    IDOrdonnance = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IDPatient = table.Column<int>(type: "int", nullable: false),
-                    IDMedecin = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    MedecinId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ordonnances", x => x.IDOrdonnance);
+                    table.PrimaryKey("PK_Ordonnances", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ordonnances_Medecins_IDMedecin",
-                        column: x => x.IDMedecin,
+                        name: "FK_Ordonnances_Medecins_MedecinId",
+                        column: x => x.MedecinId,
                         principalTable: "Medecins",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Ordonnances_Patients_IDPatient",
-                        column: x => x.IDPatient,
+                        name: "FK_Ordonnances_Patients_PatientId",
+                        column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrdonnanceMedicaments",
+                name: "MedicamentOrdonnance",
                 columns: table => new
                 {
                     MedicamentsId = table.Column<int>(type: "int", nullable: false),
-                    OrdonnanceIDOrdonnance = table.Column<int>(type: "int", nullable: false)
+                    OrdonnancesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrdonnanceMedicaments", x => new { x.MedicamentsId, x.OrdonnanceIDOrdonnance });
+                    table.PrimaryKey("PK_MedicamentOrdonnance", x => new { x.MedicamentsId, x.OrdonnancesId });
                     table.ForeignKey(
-                        name: "FK_OrdonnanceMedicaments_Medicaments_MedicamentsId",
+                        name: "FK_MedicamentOrdonnance_Medicaments_MedicamentsId",
                         column: x => x.MedicamentsId,
                         principalTable: "Medicaments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrdonnanceMedicaments_Ordonnances_OrdonnanceIDOrdonnance",
-                        column: x => x.OrdonnanceIDOrdonnance,
+                        name: "FK_MedicamentOrdonnance_Ordonnances_OrdonnancesId",
+                        column: x => x.OrdonnancesId,
                         principalTable: "Ordonnances",
-                        principalColumn: "IDOrdonnance",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -315,19 +313,19 @@ namespace ProjetNET.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrdonnanceMedicaments_OrdonnanceIDOrdonnance",
-                table: "OrdonnanceMedicaments",
-                column: "OrdonnanceIDOrdonnance");
+                name: "IX_MedicamentOrdonnance_OrdonnancesId",
+                table: "MedicamentOrdonnance",
+                column: "OrdonnancesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ordonnances_IDMedecin",
+                name: "IX_Ordonnances_MedecinId",
                 table: "Ordonnances",
-                column: "IDMedecin");
+                column: "MedecinId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ordonnances_IDPatient",
+                name: "IX_Ordonnances_PatientId",
                 table: "Ordonnances",
-                column: "IDPatient");
+                column: "PatientId");
         }
 
         /// <inheritdoc />
@@ -349,7 +347,7 @@ namespace ProjetNET.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "OrdonnanceMedicaments");
+                name: "MedicamentOrdonnance");
 
             migrationBuilder.DropTable(
                 name: "Pharmaciens");

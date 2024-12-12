@@ -1,11 +1,13 @@
-﻿namespace ProjetNET.Modeles.Repository
+﻿using ProjetNET.DTO;
+
+namespace ProjetNET.Modeles.Repository
 {
     public interface IOrdonnanceRepository
     {
-        Task<Ordonnance> Add(Ordonnance ordonnance);
-       
-        Task<List<Ordonnance>> GetAll();
-        Task<Ordonnance> GetById(int id);
-        Task Update(Ordonnance ordonnance);
+        Task<OrdonnanceResponseDTO> CreateOrdonnance(CreateOrdonnanceDTO dto);
+        Task<OrdonnanceResponseDTO> GetOrdonnanceAsDTO(int id);
+        Task<IEnumerable<OrdonnanceResponseDTO>> GetAllOrdonnances(); // Nouvelle méthode
+        Task<bool> DeleteOrdonnance(int id); // Nouvelle méthode
+        Task<OrdonnanceResponseDTO> UpdateOrdonnance(int id, UpdateOrdonnanceDTO dto); // Nouvelle méthode
     }
 }
