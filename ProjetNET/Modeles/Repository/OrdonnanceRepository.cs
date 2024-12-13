@@ -15,8 +15,8 @@ namespace ProjetNET.Modeles.Repository
         public async Task<OrdonnanceResponseDTO> CreateOrdonnance(CreateOrdonnanceDTO dto)
         {
             // Load Patient, Medecin, and Medicaments
-            var patient = await context.Patients.FindAsync(dto.PatientId);
-            var medecin = await context.Medecins.Include(m => m.User).FirstOrDefaultAsync(m => m.Id == dto.MedecinId);
+            var patient1 = await context.Patients.FindAsync(dto.PatientId);
+            var medecin1 = await context.Medecins.Include(m => m.User).FirstOrDefaultAsync(m => m.Id == dto.MedecinId);
             var medicaments = await context.Medicaments.Where(m => dto.MedicamentIds.Contains(m.Id)).ToListAsync();
 
             // Validate input data
@@ -39,8 +39,8 @@ namespace ProjetNET.Modeles.Repository
             // Save to OrdonnanceHistorique
             var historique = new OrdonnanceHistorique
             {
-                PatientName = patient.NamePatient,
-                MedecinName = medecin.User.UserName,
+                PatientName = patient1.NamePatient,
+                MedecinName = medecin1.User.UserName,
                 MedicamentNames = medicaments.Select(m => m.Name).ToList(),
                 CreationDate = DateTime.UtcNow
             };
