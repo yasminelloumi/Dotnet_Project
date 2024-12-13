@@ -118,7 +118,7 @@ async Task SeedRolesAsync(IServiceProvider serviceProvider)
     using var scope = serviceProvider.CreateScope();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    var roles = new[] { "pharmacien", "medecin", "admin" };
+    var roles = new[] { "pharmacien", "medecin", "admin","fournisseur" };
 
     foreach (var role in roles)
     {
