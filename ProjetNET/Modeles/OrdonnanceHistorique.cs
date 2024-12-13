@@ -12,7 +12,7 @@ namespace ProjetNET.Modeles
         public string MedecinName { get; set; }
 
         public List<string> MedicamentNames { get; set; } = new List<string>();
-
+        //test
         [Required]
         public DateTime CreationDate { get; set; }
     }
