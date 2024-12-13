@@ -14,34 +14,47 @@ namespace ProjetNET.Modeles.Repository
 
         public async Task<OrdonnanceResponseDTO> CreateOrdonnance(CreateOrdonnanceDTO dto)
         {
-            // Charger les entités nécessaires
+            // Load Patient, Medecin, and Medicaments
+            var patient = await context.Patients.FindAsync(dto.PatientId);
             var medecin = await context.Medecins.Include(m => m.User).FirstOrDefaultAsync(m => m.Id == dto.MedecinId);
-            var patient = await context.Patients.FirstOrDefaultAsync(p => p.ID == dto.PatientId);
             var medicaments = await context.Medicaments.Where(m => dto.MedicamentIds.Contains(m.Id)).ToListAsync();
 
-            if (medecin == null || patient == null || !medicaments.Any())
+            // Validate input data
+            if (patient == null || medecin == null || !medicaments.Any())
             {
-                throw new ArgumentException("Invalid data for creating ordonnance.");
+                throw new ArgumentException("Invalid Patient, Medecin, or Medicaments data.");
             }
 
-            // Créer l'ordonnance
+            // Create the Ordonnance entity
             var ordonnance = new Ordonnance
             {
-                Medecin = medecin,
                 Patient = patient,
+                Medecin = medecin,
                 Medicaments = medicaments
             };
 
             context.Ordonnances.Add(ordonnance);
             await context.SaveChangesAsync();
 
-            // Retourner une réponse DTO
+            // Save to OrdonnanceHistorique
+            var historique = new OrdonnanceHistorique
+            {
+                PatientName = patient.NamePatient,
+                MedecinName = medecin.User.UserName,
+                MedicamentNames = medicaments.Select(m => m.Name).ToList(),
+                CreationDate = DateTime.UtcNow
+            };
+
+            context.OrdonnanceHistoriques.Add(historique);
+            await context.SaveChangesAsync();
+
+            // Return the response DTO
             return new OrdonnanceResponseDTO
             {
                 Id = ordonnance.Id,
-                MedecinName = medecin.User.UserName,
-                PatientName = patient.NamePatient,
-                Medicaments = medicaments.Select(m => m.Name).ToList()
+                MedecinName = historique.MedecinName,
+                PatientName = historique.PatientName,
+                Medicaments = historique.MedicamentNames
             };
         }
 
@@ -49,7 +62,7 @@ namespace ProjetNET.Modeles.Repository
         {
             var ordonnance = await context.Ordonnances
                 .Include(o => o.Medecin)
-                    .ThenInclude(m => m.User) // Charger les données utilisateur du médecin
+                    .ThenInclude(m => m.User)
                 .Include(o => o.Patient)
                 .Include(o => o.Medicaments)
                 .FirstOrDefaultAsync(o => o.Id == id);
@@ -67,7 +80,7 @@ namespace ProjetNET.Modeles.Repository
                 Medicaments = ordonnance.Medicaments.Select(m => m.Name).ToList()
             };
         }
-        // Méthode pour récupérer toutes les ordonnances
+
         public async Task<IEnumerable<OrdonnanceResponseDTO>> GetAllOrdonnances()
         {
             var ordonnances = await context.Ordonnances
@@ -86,7 +99,6 @@ namespace ProjetNET.Modeles.Repository
             });
         }
 
-        // Méthode pour supprimer une ordonnance
         public async Task<bool> DeleteOrdonnance(int id)
         {
             var ordonnance = await context.Ordonnances.FindAsync(id);
@@ -100,7 +112,6 @@ namespace ProjetNET.Modeles.Repository
             return true;
         }
 
-        // Méthode pour mettre à jour une ordonnance
         public async Task<OrdonnanceResponseDTO> UpdateOrdonnance(int id, UpdateOrdonnanceDTO dto)
         {
             var ordonnance = await context.Ordonnances
@@ -112,7 +123,6 @@ namespace ProjetNET.Modeles.Repository
                 return null;
             }
 
-            // Charger les nouvelles données
             var patient = await context.Patients.FirstOrDefaultAsync(p => p.ID == dto.PatientId);
             var medicaments = await context.Medicaments.Where(m => dto.MedicamentIds.Contains(m.Id)).ToListAsync();
 
@@ -121,7 +131,6 @@ namespace ProjetNET.Modeles.Repository
                 throw new ArgumentException("Invalid data for updating ordonnance.");
             }
 
-            // Mettre à jour les propriétés
             ordonnance.Patient = patient;
             ordonnance.Medicaments = medicaments;
 
@@ -135,32 +144,36 @@ namespace ProjetNET.Modeles.Repository
                 Medicaments = medicaments.Select(m => m.Name).ToList()
             };
         }
+
         public async Task<List<Ordonnance>> SearchOrdonnances(string medecinId, int? patientId)
         {
             var query = context.Ordonnances.AsQueryable();
 
-            // Recherche par MedecinId
             if (!string.IsNullOrEmpty(medecinId))
             {
-                query = query.Where(o => o.MedecinId.Contains(medecinId));
+                query = query.Where(o => o.MedecinId == medecinId);
             }
 
-            // Recherche par PatientId
             if (patientId.HasValue)
             {
                 query = query.Where(o => o.PatientId == patientId.Value);
             }
 
-            // Inclure les entités associées, si nécessaire
             return await query
-                        .Include(o => o.Patient)
-                        .Include(o => o.Medecin)
-                        .Include(o => o.Medicaments)
-                        .ToListAsync();
+                .Include(o => o.Patient)
+                .Include(o => o.Medecin)
+                .Include(o => o.Medicaments)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<OrdonnanceHistorique>> GetOrdonnanceHistory()
+        {
+            return await context.OrdonnanceHistoriques.ToListAsync();
+        }
+
+        Task<IEnumerable<OrdonnanceResponseDTO>> IOrdonnanceRepository.SearchOrdonnances(string medecinId, int? patientId)
+        {
+            throw new NotImplementedException();
         }
     }
-    
-
-
-
 }

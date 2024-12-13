@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace ProjetNET.Modeles
 {
@@ -10,12 +9,21 @@ namespace ProjetNET.Modeles
     {
         public int Id { get; set; }
 
+        // Ensure Patient relationship is configured correctly
+        [Required] // Mark PatientId as required
         public int PatientId { get; set; }
-        public Patient Patient { get; set; }
 
+        // Add 'virtual' to enable lazy loading
+        public virtual Patient Patient { get; set; }
+
+        // Ensure Medecin relationship is configured correctly
+        [Required] // Mark MedecinId as required
         public string MedecinId { get; set; }
-        public Medecin Medecin { get; set; }
 
-        public ICollection<Medicament> Medicaments { get; set; } = new List<Medicament>();
+        // Add 'virtual' to enable lazy loading
+        public virtual Medecin Medecin { get; set; }
+
+        // Use virtual for lazy loading and initialize the collection
+        public virtual ICollection<Medicament> Medicaments { get; set; } = new List<Medicament>();
     }
 }

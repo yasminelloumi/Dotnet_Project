@@ -111,6 +111,12 @@ namespace ProjetNET.Controllers
             return Ok(ordonnances);
         }
 
+        [HttpGet("history")]
+        public async Task<IActionResult> GetOrdonnanceHistory()
+        {
+            var history = await ordonnanceRepository.GetOrdonnanceHistory();
+            return Ok(history);
+        }
 
 
 
