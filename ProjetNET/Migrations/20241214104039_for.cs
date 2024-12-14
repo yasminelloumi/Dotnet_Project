@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetNET.Migrations
 {
     /// <inheritdoc />
-    public partial class fini : Migration
+    public partial class @for : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,6 +52,23 @@ namespace ProjetNET.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Fournisseurs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Prix = table.Column<float>(type: "real", nullable: false),
+                    QttStock = table.Column<int>(type: "int", nullable: false),
+                    QttSortie = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fournisseurs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Medicaments",
                 columns: table => new
                 {
@@ -60,11 +77,29 @@ namespace ProjetNET.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Prix = table.Column<float>(type: "real", nullable: false),
-                    QttStock = table.Column<int>(type: "int", nullable: false)
+                    QttStock = table.Column<int>(type: "int", nullable: false),
+                    QttSortie = table.Column<int>(type: "int", nullable: false),
+                    SeuilCritique = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Medicaments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrdonnanceHistoriques",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MedecinName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MedicamentNames = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrdonnanceHistoriques", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -224,6 +259,28 @@ namespace ProjetNET.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MedicamentId = table.Column<int>(type: "int", nullable: false),
+                    QuantiteDemandee = table.Column<int>(type: "int", nullable: false),
+                    DateNotification = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsEnvoye = table.Column<bool>(type: "bit", nullable: false),
+                    FournisseurId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Fournisseurs_FournisseurId",
+                        column: x => x.FournisseurId,
+                        principalTable: "Fournisseurs",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ordonnances",
                 columns: table => new
                 {
@@ -318,6 +375,11 @@ namespace ProjetNET.Migrations
                 column: "OrdonnancesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_FournisseurId",
+                table: "Notifications",
+                column: "FournisseurId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ordonnances_MedecinId",
                 table: "Ordonnances",
                 column: "MedecinId");
@@ -350,6 +412,12 @@ namespace ProjetNET.Migrations
                 name: "MedicamentOrdonnance");
 
             migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "OrdonnanceHistoriques");
+
+            migrationBuilder.DropTable(
                 name: "Pharmaciens");
 
             migrationBuilder.DropTable(
@@ -360,6 +428,9 @@ namespace ProjetNET.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ordonnances");
+
+            migrationBuilder.DropTable(
+                name: "Fournisseurs");
 
             migrationBuilder.DropTable(
                 name: "Medecins");

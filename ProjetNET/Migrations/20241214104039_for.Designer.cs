@@ -12,8 +12,8 @@ using ProjetNET.Modeles;
 namespace ProjetNET.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241212103326_fini")]
-    partial class fini
+    [Migration("20241214104039_for")]
+    partial class @for
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,6 +242,36 @@ namespace ProjetNET.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ProjetNET.Modeles.Fournisseur", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Prix")
+                        .HasColumnType("real");
+
+                    b.Property<int>("QttSortie")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QttStock")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Fournisseurs");
+                });
+
             modelBuilder.Entity("ProjetNET.Modeles.Medecin", b =>
                 {
                     b.Property<string>("Id")
@@ -275,12 +305,48 @@ namespace ProjetNET.Migrations
                     b.Property<float>("Prix")
                         .HasColumnType("real");
 
+                    b.Property<int>("QttSortie")
+                        .HasColumnType("int");
+
                     b.Property<int>("QttStock")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeuilCritique")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Medicaments");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateNotification")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("FournisseurId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsEnvoye")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MedicamentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantiteDemandee")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FournisseurId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
@@ -305,6 +371,34 @@ namespace ProjetNET.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Ordonnances");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.OrdonnanceHistorique", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MedecinName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MedicamentNames")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PatientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrdonnanceHistoriques");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Patient", b =>
@@ -418,6 +512,13 @@ namespace ProjetNET.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ProjetNET.Modeles.Notification", b =>
+                {
+                    b.HasOne("ProjetNET.Modeles.Fournisseur", null)
+                        .WithMany("Notifications")
+                        .HasForeignKey("FournisseurId");
+                });
+
             modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
                 {
                     b.HasOne("ProjetNET.Modeles.Medecin", "Medecin")
@@ -446,6 +547,11 @@ namespace ProjetNET.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.Fournisseur", b =>
+                {
+                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Patient", b =>

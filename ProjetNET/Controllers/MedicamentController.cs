@@ -10,11 +10,14 @@ namespace ProjetNET.Controllers
     public class MedicamentController : ControllerBase
     {
         private readonly IMedicamentRepository medicamentRepository;
+       
 
         public MedicamentController(IMedicamentRepository medicamentRepository)
         {
             this.medicamentRepository = medicamentRepository;
+           
         }
+
 
         // GET: api/Medicament
         [HttpGet]
@@ -26,7 +29,7 @@ namespace ProjetNET.Controllers
 
         // GET: api/Medicament/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(int id) 
         {
             var medicament = await medicamentRepository.GetById(id);
             if (medicament == null)
@@ -128,7 +131,9 @@ namespace ProjetNET.Controllers
 
             return Ok(medicamentDTOs);
         }
+        ///
+      
 
 
-    }
+}
 }

@@ -15,6 +15,8 @@ namespace ProjetNET.Modeles
         public DbSet<Ordonnance> Ordonnances { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<OrdonnanceHistorique> OrdonnanceHistoriques { get; set; }
+        public DbSet<Fournisseur> Fournisseurs { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         // Enable lazy loading proxies
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
