@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ProjetNET.Modeles
 {
@@ -27,6 +28,7 @@ namespace ProjetNET.Modeles
         //public virtual ICollection<Medicament> Medicaments { get; set; } = new List<Medicament>();
 
         // Relation avec MedicamentOrdonnance (table intermédiaire)
+        [JsonIgnore]
         public List<MedicamentOrdonnance> MedicamentOrdonnances { get; set; } = new List<MedicamentOrdonnance>();
 
 

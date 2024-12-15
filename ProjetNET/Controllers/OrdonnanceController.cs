@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetNET.Modeles.Repository;
 using ProjetNET.Modeles;
 using ProjetNET.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjetNET.Controllers
 {
@@ -10,16 +11,16 @@ namespace ProjetNET.Controllers
     [ApiController]
     public class OrdonnanceController : ControllerBase
     {
+        private readonly Context _context;
         private readonly IOrdonnanceRepository ordonnanceRepository;
 
-        public OrdonnanceController(IOrdonnanceRepository ordonnanceRepository)
+        public OrdonnanceController(Context context, IOrdonnanceRepository ordonnanceRepository)
         {
+            _context = context;
             this.ordonnanceRepository = ordonnanceRepository;
         }
 
-
         [HttpPost]
-       
         public async Task<IActionResult> CreateOrdonnance([FromBody] CreateOrdonnanceDTO dto)
         {
             if (dto == null)
@@ -46,25 +47,47 @@ namespace ProjetNET.Controllers
                 return StatusCode(500, $"Une erreur est survenue: {ex.Message}");
             }
         }
-    
 
-    [HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetOrdonnance(int id)
         {
             try
             {
-                var ordonnance = await ordonnanceRepository.GetOrdonnanceAsDTO(id);
+                // Fetch Ordonnance and its related MedicamentOrdonnances and Medicaments
+                var ordonnance = await _context.Ordonnances
+                    .Include(o => o.MedicamentOrdonnances)
+                        .ThenInclude(mo => mo.Medicament) // Include Medicament in MedicamentOrdonnance
+                    .Include(o => o.Patient) // Include Patient to access Patient's name
+                    .Include(o => o.Medecin) // Include Medecin to access Medecin's user
+                        .ThenInclude(m => m.User) // Include ApplicationUser (IdentityUser)
+                    .FirstOrDefaultAsync(o => o.Id == id);
+
                 if (ordonnance == null)
                 {
                     return NotFound("Ordonnance not found.");
                 }
-                return Ok(ordonnance);
+
+                // Map Ordonnance to OrdonnanceDTO
+                var ordonnanceDto = new OrdonnanceDTO
+                {
+                    Id = ordonnance.Id,
+                    // Access the UserName from the Medecin's User (ApplicationUser)
+                    MedecinName = ordonnance.Medecin?.User?.UserName ?? "Unknown Medecin",
+                    PatientName = ordonnance.Patient?.NamePatient ?? "Unknown Patient", // Use NamePatient for the patient's name
+                    Medicaments = ordonnance.MedicamentOrdonnances
+                        .Select(mo => mo.Medicament.Name) // Only take the name of the Medicament
+                        .ToList()
+                };
+
+                // Return the DTO
+                return Ok(ordonnanceDto);
             }
             catch (Exception ex)
             {
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
 
         // Méthode GET pour récupérer toutes les ordonnances
         [HttpGet]
@@ -85,7 +108,7 @@ namespace ProjetNET.Controllers
             }
         }
 
-        //// Méthode DELETE pour supprimer une ordonnance
+        // Méthode DELETE pour supprimer une ordonnance
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrdonnance(int id)
         {
@@ -131,7 +154,8 @@ namespace ProjetNET.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
-        //    // Méthode GET pour rechercher des ordonnances par des critères
+
+        // Méthode GET pour rechercher des ordonnances par des critères
         [HttpGet("search")]
         public async Task<IActionResult> SearchOrdonnances([FromQuery] string medecinId, [FromQuery] int? patientId)
         {
@@ -175,7 +199,5 @@ namespace ProjetNET.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
-
-
     }
 }

@@ -12,8 +12,8 @@ using ProjetNET.Modeles;
 namespace ProjetNET.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241215151914_fin")]
-    partial class fin
+    [Migration("20241215162019_toto")]
+    partial class toto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -316,6 +316,9 @@ namespace ProjetNET.Migrations
                     b.Property<int>("IDOrdonnance")
                         .HasColumnType("int");
 
+                    b.Property<int?>("MedicamentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantite")
                         .HasColumnType("int");
 
@@ -324,6 +327,8 @@ namespace ProjetNET.Migrations
                     b.HasIndex("IDMedicament");
 
                     b.HasIndex("IDOrdonnance");
+
+                    b.HasIndex("MedicamentId");
 
                     b.ToTable("MedicamentOrdonnances");
                 });
@@ -505,7 +510,7 @@ namespace ProjetNET.Migrations
             modelBuilder.Entity("ProjetNET.Modeles.MedicamentOrdonnance", b =>
                 {
                     b.HasOne("ProjetNET.Modeles.Medicament", "Medicament")
-                        .WithMany("MedicamentOrdonnances")
+                        .WithMany()
                         .HasForeignKey("IDMedicament")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -515,6 +520,10 @@ namespace ProjetNET.Migrations
                         .HasForeignKey("IDOrdonnance")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ProjetNET.Modeles.Medicament", null)
+                        .WithMany("MedicamentOrdonnances")
+                        .HasForeignKey("MedicamentId");
 
                     b.Navigation("Medicament");
 

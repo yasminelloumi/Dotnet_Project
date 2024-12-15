@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetNET.Migrations
 {
     /// <inheritdoc />
-    public partial class fin : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -312,7 +312,8 @@ namespace ProjetNET.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IDOrdonnance = table.Column<int>(type: "int", nullable: false),
                     IDMedicament = table.Column<int>(type: "int", nullable: false),
-                    Quantite = table.Column<int>(type: "int", nullable: false)
+                    Quantite = table.Column<int>(type: "int", nullable: false),
+                    MedicamentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -323,6 +324,11 @@ namespace ProjetNET.Migrations
                         principalTable: "Medicaments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MedicamentOrdonnances_Medicaments_MedicamentId",
+                        column: x => x.MedicamentId,
+                        principalTable: "Medicaments",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_MedicamentOrdonnances_Ordonnances_IDOrdonnance",
                         column: x => x.IDOrdonnance,
@@ -379,6 +385,11 @@ namespace ProjetNET.Migrations
                 name: "IX_MedicamentOrdonnances_IDOrdonnance",
                 table: "MedicamentOrdonnances",
                 column: "IDOrdonnance");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicamentOrdonnances_MedicamentId",
+                table: "MedicamentOrdonnances",
+                column: "MedicamentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_FournisseurId",

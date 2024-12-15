@@ -50,7 +50,8 @@ namespace ProjetNET.Modeles.Repository
                 var medicamentOrdonnance = new MedicamentOrdonnance
                 {
                     IDMedicament = medicament.Id,
-                    Quantite = medicamentDto.Quantite
+                    Quantite = medicamentDto.Quantite,
+                    Medicament = medicament // Assurez-vous d'ajouter ceci
                 };
 
                 ordonnance.MedicamentOrdonnances.Add(medicamentOrdonnance);
@@ -65,13 +66,14 @@ namespace ProjetNET.Modeles.Repository
             {
                 PatientName = patient.NamePatient,
                 MedecinName = medecin.User.UserName,
-                Medicaments = medicaments.Select(m => new MedicamentHistoriqueDTO
+                Medicaments = ordonnance.MedicamentOrdonnances.Select(mo => new MedicamentHistoriqueDTO
                 {
-                    MedicamentName = m.Name,
-                    Quantite = ordonnance.MedicamentOrdonnances.First(mo => mo.IDMedicament == m.Id).Quantite
+                    MedicamentName = mo.Medicament.Name,
+                    Quantite = mo.Quantite
                 }).ToList(),
                 CreationDate = DateTime.UtcNow
             };
+
 
             context.OrdonnanceHistoriques.Add(historique);
             await context.SaveChangesAsync();
