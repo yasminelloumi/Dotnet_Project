@@ -29,7 +29,7 @@ namespace ProjetNET.Controllers
                 p.ID,
                 p.NamePatient,
                 p.DateOfBirth,
-                Historique = p.Historique // Propriété calculée qui liste les médicaments
+                //Historique = p.Historique // Propriété calculée qui liste les médicaments
             });
 
             return Ok(patientDTOs);
@@ -123,7 +123,7 @@ namespace ProjetNET.Controllers
                 p.ID,
                 p.NamePatient,
                 p.DateOfBirth,
-                Historique = p.Historique // Inclure l'historique des médicaments
+               // Historique = p.Historique // Inclure l'historique des médicaments
             });
 
             return Ok(patientDTOs);
@@ -131,18 +131,18 @@ namespace ProjetNET.Controllers
 
 
 
-        [HttpGet("GetMedicaments/{patientId}")]
-        public async Task<IActionResult> GetMedicaments(int patientId)
-        {
-            var medicaments = await _patientRepository.GetMedicamentsByPatientId(patientId);
+        //[HttpGet("GetMedicaments/{patientId}")]
+        //public async Task<IActionResult> GetMedicaments(int patientId)
+        //{
+        //    var medicaments = await _patientRepository.GetMedicamentsByPatientId(patientId);
 
-            if (medicaments == null || !medicaments.Any())
-            {
-                return NotFound("No medicaments found for this patient.");
-            }
+        //    if (medicaments == null || !medicaments.Any())
+        //    {
+        //        return NotFound("No medicaments found for this patient.");
+        //    }
 
-            return Ok(medicaments);
-        }
+        //    return Ok(medicaments);
+        //}
 
     }
 }

@@ -1,17 +1,31 @@
-﻿namespace ProjetNET.DTO
+﻿using ProjetNET.Modeles;
+
+namespace ProjetNET.DTO
 {
     public class CreateOrdonnanceDTO
     {
         public int PatientId { get; set; }
         public string MedecinName { get; set; }
-        public List<int> MedicamentIds { get; set; } // Liste des IDs des médicaments à inclure
+        public List<MedicamentQuantityDTO> Medicaments { get; set; } = new List<MedicamentQuantityDTO>();
     }
+    public class MedicamentQuantityDTO
+    {
+        public int MedicamentId { get; set; }
+        public int Quantite { get; set; }
+    }
+
 
     public class OrdonnanceResponseDTO
     {
         public int Id { get; set; }
         public string MedecinName { get; set; }
         public string PatientName { get; set; }
-        public List<string> Medicaments { get; set; } // Noms des médicaments
+        public List<MedicamentQuantityDTO> Medicaments { get; set; } = new List<MedicamentQuantityDTO>();
+
+
     }
+
+    /////
+    
+
 }

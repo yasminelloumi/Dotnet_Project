@@ -17,55 +17,91 @@ namespace ProjetNET.Controllers
             this.ordonnanceRepository = ordonnanceRepository;
         }
 
-       
+
         [HttpPost]
+       
         public async Task<IActionResult> CreateOrdonnance([FromBody] CreateOrdonnanceDTO dto)
         {
-            if (!ModelState.IsValid)
+            if (dto == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Données invalides.");
             }
 
             try
             {
-                var response = await ordonnanceRepository.CreateOrdonnance(dto);
-                return CreatedAtAction(nameof(GetOrdonnance), new { id = response.Id }, response);
+                // Appel à la méthode du repository pour créer l'ordonnance
+                var ordonnanceResponse = await ordonnanceRepository.CreateOrdonnanceAsync(dto);
+
+                // Retourner une réponse avec le DTO d'ordonnance
+                return Ok(ordonnanceResponse);
             }
             catch (ArgumentException ex)
             {
+                // Gestion des erreurs spécifiques
                 return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                // Gestion des erreurs générales
+                return StatusCode(500, $"Une erreur est survenue: {ex.Message}");
+            }
         }
+    
 
-        [HttpGet("{id}")]
+    [HttpGet("{id}")]
         public async Task<IActionResult> GetOrdonnance(int id)
         {
-            var ordonnance = await ordonnanceRepository.GetOrdonnanceAsDTO(id);
-            if (ordonnance == null)
+            try
             {
-                return NotFound("Ordonnance not found.");
+                var ordonnance = await ordonnanceRepository.GetOrdonnanceAsDTO(id);
+                if (ordonnance == null)
+                {
+                    return NotFound("Ordonnance not found.");
+                }
+                return Ok(ordonnance);
             }
-            return Ok(ordonnance);
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         // Méthode GET pour récupérer toutes les ordonnances
         [HttpGet]
         public async Task<IActionResult> GetAllOrdonnances()
         {
-            var ordonnances = await ordonnanceRepository.GetAllOrdonnances();
-            return Ok(ordonnances);
+            try
+            {
+                var ordonnances = await ordonnanceRepository.GetAllOrdonnances();
+                if (ordonnances == null || !ordonnances.Any())
+                {
+                    return NotFound("No ordonnances found.");
+                }
+                return Ok(ordonnances);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
-        // Méthode DELETE pour supprimer une ordonnance
+        //// Méthode DELETE pour supprimer une ordonnance
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrdonnance(int id)
         {
-            var success = await ordonnanceRepository.DeleteOrdonnance(id);
-            if (!success)
+            try
             {
-                return NotFound("Ordonnance not found.");
+                var success = await ordonnanceRepository.DeleteOrdonnance(id);
+                if (!success)
+                {
+                    return NotFound("Ordonnance not found.");
+                }
+                return NoContent(); // HTTP 204 No Content - suppression réussie
             }
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         // Méthode PUT pour mettre à jour une ordonnance
@@ -74,24 +110,28 @@ namespace ProjetNET.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState); // Si le modèle est invalide, renvoyer BadRequest
             }
 
             try
             {
-                var response = await ordonnanceRepository.UpdateOrdonnance(id, dto);
+                var response = await ordonnanceRepository.UpdateOrdonnanceAsync(id, dto);
                 if (response == null)
                 {
                     return NotFound("Ordonnance not found.");
                 }
-                return Ok(response);
+                return Ok(response); // Ordonnance mise à jour avec succès
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = ex.Message }); // Erreur liée à l'argument
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
             }
         }
-        // Méthode GET pour rechercher des ordonnances par des critères
+        //    // Méthode GET pour rechercher des ordonnances par des critères
         [HttpGet("search")]
         public async Task<IActionResult> SearchOrdonnances([FromQuery] string medecinId, [FromQuery] int? patientId)
         {
@@ -101,28 +141,41 @@ namespace ProjetNET.Controllers
                 return BadRequest("At least one search criterion (MedecinId or PatientId) must be provided.");
             }
 
-            var ordonnances = await ordonnanceRepository.SearchOrdonnances(medecinId, patientId);
-
-            if (ordonnances == null || !ordonnances.Any())
+            try
             {
-                return NotFound("No ordonnances found matching the search criteria.");
-            }
+                var ordonnances = await ordonnanceRepository.SearchOrdonnances(medecinId, patientId);
 
-            return Ok(ordonnances);
+                if (ordonnances == null || !ordonnances.Any())
+                {
+                    return NotFound("No ordonnances found matching the search criteria.");
+                }
+
+                return Ok(ordonnances); // Ordonnances correspondant aux critères
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         [HttpGet("history")]
         public async Task<IActionResult> GetOrdonnanceHistory()
         {
-            var history = await ordonnanceRepository.GetOrdonnanceHistory();
-            return Ok(history);
+            try
+            {
+                var history = await ordonnanceRepository.GetOrdonnanceHistory();
+                if (history == null || !history.Any())
+                {
+                    return NotFound("No ordonnance history found.");
+                }
+                return Ok(history);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
 
-
-
-
-
     }
-
 }

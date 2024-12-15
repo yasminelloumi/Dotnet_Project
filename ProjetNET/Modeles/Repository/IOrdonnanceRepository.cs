@@ -4,11 +4,11 @@ namespace ProjetNET.Modeles.Repository
 {
     public interface IOrdonnanceRepository
     {
-        Task<OrdonnanceResponseDTO> CreateOrdonnance(CreateOrdonnanceDTO dto); // Creating an Ordonnance
+        Task<OrdonnanceResponseDTO> CreateOrdonnanceAsync(CreateOrdonnanceDTO dto); // Creating an Ordonnance
         Task<OrdonnanceResponseDTO> GetOrdonnanceAsDTO(int id); // Get a specific Ordonnance as DTO
         Task<IEnumerable<OrdonnanceResponseDTO>> GetAllOrdonnances(); // Get all Ordonnances as DTOs
         Task<bool> DeleteOrdonnance(int id); // Delete a specific Ordonnance
-        Task<OrdonnanceResponseDTO> UpdateOrdonnance(int id, UpdateOrdonnanceDTO dto); // Update an existing Ordonnance
+        Task<Ordonnance> UpdateOrdonnanceAsync(int id, UpdateOrdonnanceDTO dto); // Update an existing Ordonnance
         Task<IEnumerable<OrdonnanceResponseDTO>> SearchOrdonnances(string medecinId, int? patientId); // Search Ordonnances by Medecin and Patient
         Task<IEnumerable<OrdonnanceHistorique>> GetOrdonnanceHistory(); // Get the history of Ordonnances
     }

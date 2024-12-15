@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Collections.Generic;
+using ProjetNET.DTO;
 
 namespace ProjetNET.Modeles
 {
@@ -17,7 +18,7 @@ namespace ProjetNET.Modeles
         public DbSet<OrdonnanceHistorique> OrdonnanceHistoriques { get; set; }
         public DbSet<Fournisseur> Fournisseurs { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-
+        public DbSet<MedicamentOrdonnance> MedicamentOrdonnances { get; set; }
         // Enable lazy loading proxies
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -50,23 +51,35 @@ namespace ProjetNET.Modeles
                 .HasOne(o => o.Patient)
                 .WithMany(p => p.Ordonnances);
 
+            
+            // Optionnel : Configurations supplémentaires pour les champs (si nécessaire)
+            modelBuilder.Entity<Medicament>()
+                .Property(m => m.Name)
+                .HasMaxLength(100)
+                .IsRequired();
 
-            // Relation Ordonnance -> Medicaments (many-to-many)
             modelBuilder.Entity<Ordonnance>()
-                .HasMany(o => o.Medicaments)
-                .WithMany(m => m.Ordonnances);
+                .Property(o => o.PatientId)
+                .IsRequired();
 
-            // Configure OrdonnanceHistorique
-            modelBuilder.Entity<OrdonnanceHistorique>()
-                .Property(h => h.MedicamentNames)
-                .HasConversion(
-                    v => string.Join(",", v), // Convert List to CSV
-                    v => v.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList() // Convert CSV back to List
-                )
-                .Metadata.SetValueComparer(new ValueComparer<List<string>>(
-                    (c1, c2) => c1.SequenceEqual(c2), // Compare lists for equality
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())), // Generate hash code for the list
-                    c => c.ToList())); // Create a deep copy
+            modelBuilder.Entity<MedicamentOrdonnance>()
+            .HasOne(mo => mo.Ordonnance)
+            .WithMany(o => o.MedicamentOrdonnances)
+            .HasForeignKey(mo => mo.IDOrdonnance)
+            .OnDelete(DeleteBehavior.Cascade);  // Vérifiez le comportement ici
+        
+        modelBuilder.Entity<MedicamentOrdonnance>()
+            .HasOne(mo => mo.Medicament)
+            .WithMany(m => m.MedicamentOrdonnances)
+            .HasForeignKey(mo => mo.IDMedicament)
+            .OnDelete(DeleteBehavior.Cascade);  // Vérifiez le comportement ici
+
+
+
+            // Configuration pour OrdonnanceHistorique
+
+            modelBuilder.Ignore<MedicamentHistoriqueDTO>();
+
         }
     }
 }

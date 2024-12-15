@@ -12,8 +12,8 @@ using ProjetNET.Modeles;
 namespace ProjetNET.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241214104039_for")]
-    partial class @for
+    [Migration("20241215151914_fin")]
+    partial class fin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace ProjetNET.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("MedicamentOrdonnance", b =>
-                {
-                    b.Property<int>("MedicamentsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrdonnancesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MedicamentsId", "OrdonnancesId");
-
-                    b.HasIndex("OrdonnancesId");
-
-                    b.ToTable("MedicamentOrdonnance");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -300,7 +285,8 @@ namespace ProjetNET.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<float>("Prix")
                         .HasColumnType("real");
@@ -311,12 +297,35 @@ namespace ProjetNET.Migrations
                     b.Property<int>("QttStock")
                         .HasColumnType("int");
 
-                    b.Property<int>("SeuilCritique")
+                    b.HasKey("Id");
+
+                    b.ToTable("Medicaments");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.MedicamentOrdonnance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IDMedicament")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IDOrdonnance")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantite")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Medicaments");
+                    b.HasIndex("IDMedicament");
+
+                    b.HasIndex("IDOrdonnance");
+
+                    b.ToTable("MedicamentOrdonnances");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Notification", b =>
@@ -388,10 +397,6 @@ namespace ProjetNET.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MedicamentNames")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PatientName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -433,21 +438,6 @@ namespace ProjetNET.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Pharmaciens");
-                });
-
-            modelBuilder.Entity("MedicamentOrdonnance", b =>
-                {
-                    b.HasOne("ProjetNET.Modeles.Medicament", null)
-                        .WithMany()
-                        .HasForeignKey("MedicamentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjetNET.Modeles.Ordonnance", null)
-                        .WithMany()
-                        .HasForeignKey("OrdonnancesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -512,6 +502,25 @@ namespace ProjetNET.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ProjetNET.Modeles.MedicamentOrdonnance", b =>
+                {
+                    b.HasOne("ProjetNET.Modeles.Medicament", "Medicament")
+                        .WithMany("MedicamentOrdonnances")
+                        .HasForeignKey("IDMedicament")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetNET.Modeles.Ordonnance", "Ordonnance")
+                        .WithMany("MedicamentOrdonnances")
+                        .HasForeignKey("IDOrdonnance")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medicament");
+
+                    b.Navigation("Ordonnance");
+                });
+
             modelBuilder.Entity("ProjetNET.Modeles.Notification", b =>
                 {
                     b.HasOne("ProjetNET.Modeles.Fournisseur", null)
@@ -552,6 +561,16 @@ namespace ProjetNET.Migrations
             modelBuilder.Entity("ProjetNET.Modeles.Fournisseur", b =>
                 {
                     b.Navigation("Notifications");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.Medicament", b =>
+                {
+                    b.Navigation("MedicamentOrdonnances");
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.Ordonnance", b =>
+                {
+                    b.Navigation("MedicamentOrdonnances");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Patient", b =>

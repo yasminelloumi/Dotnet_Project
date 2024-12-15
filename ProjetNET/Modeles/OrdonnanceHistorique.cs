@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ProjetNET.DTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjetNET.Modeles
 {
@@ -11,7 +12,7 @@ namespace ProjetNET.Modeles
 
         public string MedecinName { get; set; }
 
-        public List<string> MedicamentNames { get; set; } = new List<string>();
+        public List<MedicamentHistoriqueDTO> Medicaments { get; set; } = new List<MedicamentHistoriqueDTO>();
         //test
         [Required]
         public DateTime CreationDate { get; set; }

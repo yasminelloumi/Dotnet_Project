@@ -24,6 +24,11 @@ namespace ProjetNET.Modeles
         public virtual Medecin Medecin { get; set; }
 
         // Use virtual for lazy loading and initialize the collection
-        public virtual ICollection<Medicament> Medicaments { get; set; } = new List<Medicament>();
+        //public virtual ICollection<Medicament> Medicaments { get; set; } = new List<Medicament>();
+
+        // Relation avec MedicamentOrdonnance (table intermédiaire)
+        public List<MedicamentOrdonnance> MedicamentOrdonnances { get; set; } = new List<MedicamentOrdonnance>();
+
+
     }
 }

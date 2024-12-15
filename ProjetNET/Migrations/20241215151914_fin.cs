@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetNET.Migrations
 {
     /// <inheritdoc />
-    public partial class @for : Migration
+    public partial class fin : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -74,12 +74,11 @@ namespace ProjetNET.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Prix = table.Column<float>(type: "real", nullable: false),
                     QttStock = table.Column<int>(type: "int", nullable: false),
-                    QttSortie = table.Column<int>(type: "int", nullable: false),
-                    SeuilCritique = table.Column<int>(type: "int", nullable: false)
+                    QttSortie = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,7 +93,6 @@ namespace ProjetNET.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MedecinName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MedicamentNames = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -307,24 +305,27 @@ namespace ProjetNET.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MedicamentOrdonnance",
+                name: "MedicamentOrdonnances",
                 columns: table => new
                 {
-                    MedicamentsId = table.Column<int>(type: "int", nullable: false),
-                    OrdonnancesId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IDOrdonnance = table.Column<int>(type: "int", nullable: false),
+                    IDMedicament = table.Column<int>(type: "int", nullable: false),
+                    Quantite = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MedicamentOrdonnance", x => new { x.MedicamentsId, x.OrdonnancesId });
+                    table.PrimaryKey("PK_MedicamentOrdonnances", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MedicamentOrdonnance_Medicaments_MedicamentsId",
-                        column: x => x.MedicamentsId,
+                        name: "FK_MedicamentOrdonnances_Medicaments_IDMedicament",
+                        column: x => x.IDMedicament,
                         principalTable: "Medicaments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MedicamentOrdonnance_Ordonnances_OrdonnancesId",
-                        column: x => x.OrdonnancesId,
+                        name: "FK_MedicamentOrdonnances_Ordonnances_IDOrdonnance",
+                        column: x => x.IDOrdonnance,
                         principalTable: "Ordonnances",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -370,9 +371,14 @@ namespace ProjetNET.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicamentOrdonnance_OrdonnancesId",
-                table: "MedicamentOrdonnance",
-                column: "OrdonnancesId");
+                name: "IX_MedicamentOrdonnances_IDMedicament",
+                table: "MedicamentOrdonnances",
+                column: "IDMedicament");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicamentOrdonnances_IDOrdonnance",
+                table: "MedicamentOrdonnances",
+                column: "IDOrdonnance");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_FournisseurId",
@@ -409,7 +415,7 @@ namespace ProjetNET.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "MedicamentOrdonnance");
+                name: "MedicamentOrdonnances");
 
             migrationBuilder.DropTable(
                 name: "Notifications");

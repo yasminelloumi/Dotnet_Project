@@ -22,7 +22,7 @@ namespace ProjetNET.Modeles.Repository
         // Delete a patient by ID
         // Task Delete(int id);
 
-        Task<List<Medicament>> GetMedicamentsByPatientId(int patientId);
+        //Task<List<Medicament>> GetMedicamentsByPatientId(int patientId);
 
         Task<List<Patient>> SearchPatients(string searchTerm);
     }

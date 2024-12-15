@@ -26,7 +26,7 @@ namespace ProjetNET.Modeles.Repository
         {
             return await _context.Patients
                 .Include(p => p.Ordonnances)
-                    .ThenInclude(o => o.Medicaments)
+                    .ThenInclude(o => o.MedicamentOrdonnances)
                 .ToListAsync();
         }
 
@@ -44,25 +44,25 @@ namespace ProjetNET.Modeles.Repository
         }
 
         //hist
-        public async Task<List<Medicament>> GetMedicamentsByPatientId(int patientId)
-        {
-            // Récupérez le patient avec ses ordonnances et leurs médicaments
-            var patient = await _context.Patients
-                .Include(p => p.Ordonnances)
-                .ThenInclude(o => o.Medicaments)
-                .FirstOrDefaultAsync(p => p.ID == patientId);
+        //public async Task<List<Medicament>> GetMedicamentsByPatientId(int patientId)
+        //{
+        //    // Récupérez le patient avec ses ordonnances et leurs médicaments
+        //    var patient = await _context.Patients
+        //        .Include(p => p.Ordonnances)
+        //        .ThenInclude(o => o.MedicamentOrdonnances)
+        //        .FirstOrDefaultAsync(p => p.ID == patientId);
 
-            if (patient == null)
-            {
-                return null; // Patient introuvable
-            }
+        //    if (patient == null)
+        //    {
+        //        return null; // Patient introuvable
+        //    }
 
-            // Récupérez tous les médicaments via les ordonnances
-            return patient.Ordonnances
-                          .SelectMany(o => o.Medicaments)
-                          .Distinct()
-                          .ToList();
-        }
+        //    // Récupérez tous les médicaments via les ordonnances
+        ////    return patient.Ordonnances
+        ////                  .SelectMany(o => o.Medicament)
+        ////                  .Distinct()
+        ////                  .ToList();
+        //}
         //methode recherche
         public async Task<List<Patient>> SearchPatients(string searchTerm)
         {
@@ -88,7 +88,7 @@ namespace ProjetNET.Modeles.Repository
 
             return await query
                         .Include(p => p.Ordonnances)
-                            .ThenInclude(o => o.Medicaments)
+                            .ThenInclude(o => o.MedicamentOrdonnances)
                         .ToListAsync();
         }
 

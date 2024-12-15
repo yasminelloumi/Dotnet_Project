@@ -15,7 +15,8 @@ namespace ProjetNET.Modeles
         public int QttSortie { get; set; }
 
         [JsonIgnore]
-        public List<Ordonnance> Ordonnances { get; set; } = new List<Ordonnance>();
+        public List<MedicamentOrdonnance> MedicamentOrdonnances { get; set; } = new List<MedicamentOrdonnance>();
+
 
         // Méthode pour ajuster le stock du médicament
         public void AjouterStock(int quantiteAjoutee)

@@ -3,6 +3,9 @@
     public class UpdateOrdonnanceDTO
     {
         public int PatientId { get; set; }
-        public List<int> MedicamentIds { get; set; }
+        public string MedecinName { get; set; }  // Add this to identify the doctor
+        public List<MedicamentQuantityDTO> Medicaments { get; set; }
     }
+
+    
 }
