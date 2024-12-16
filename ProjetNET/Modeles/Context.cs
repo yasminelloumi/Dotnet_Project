@@ -16,7 +16,7 @@ namespace ProjetNET.Modeles
         public DbSet<Ordonnance> Ordonnances { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<OrdonnanceHistorique> OrdonnanceHistoriques { get; set; }
-        public DbSet<MedicamentHistoriqueDTO> MedicamentHistoriques { get; set; }
+      
         public DbSet<Fournisseur> Fournisseurs { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<MedicamentOrdonnance> MedicamentOrdonnances { get; set; }
@@ -72,17 +72,15 @@ namespace ProjetNET.Modeles
                 .HasOne(mo => mo.Medicament)
                 .WithMany()
                 .HasForeignKey(mo => mo.IDMedicament);
+
+        
             
-            modelBuilder.Entity<MedicamentHistoriqueDTO>()
-            .HasOne<OrdonnanceHistorique>()
-            .WithMany(o => o.Medicaments)  // Navigation property from OrdonnanceHistorique to MedicamentHistorique
-            .HasForeignKey(m => m.OrdonnanceHistoriqueId);  // Foreign key
 
-
-            // Configuration pour OrdonnanceHistorique
-
-            modelBuilder.Ignore<MedicamentHistoriqueDTO>();
-
+            modelBuilder.Entity<OrdonnanceHistorique>()
+    .HasMany(o => o.Medicaments)
+    .WithOne(m => m.OrdonnanceHistorique)
+    .HasForeignKey(m => m.OrdonnanceHistoriqueId)
+    .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

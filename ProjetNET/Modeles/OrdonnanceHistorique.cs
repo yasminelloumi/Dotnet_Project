@@ -1,20 +1,23 @@
-﻿using ProjetNET.DTO;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProjetNET.Modeles
+public class MedicamentHistorique
 {
-    public class OrdonnanceHistorique
-    {
-        [Key]
-        public int Id { get; set; }
+    [Key]
+    public int Id { get; set; } // Clé primaire
+    public string Nom { get; set; }
+    public int Quantite { get; set; }
 
-        public string PatientName { get; set; }
+    public int OrdonnanceHistoriqueId { get; set; } // Clé étrangère
+    public OrdonnanceHistorique OrdonnanceHistorique { get; set; } // Navigation inverse
+}
 
-        public string MedecinName { get; set; }
+public class OrdonnanceHistorique
+{
+    [Key]
+    public int Id { get; set; } // Clé primaire
+    public string PatientName { get; set; }
+    public string MedecinName { get; set; }
 
-        public List<MedicamentHistoriqueDTO> Medicaments { get; set; } = new List<MedicamentHistoriqueDTO>();
-        //test
-        [Required]
-        public DateTime CreationDate { get; set; }
-    }
+    public List<MedicamentHistorique> Medicaments { get; set; } // Navigation
+    public DateTime CreationDate { get; set; }
 }

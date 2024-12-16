@@ -66,9 +66,9 @@ namespace ProjetNET.Modeles.Repository
             {
                 PatientName = patient.NamePatient,
                 MedecinName = medecin.User.UserName,
-                Medicaments = ordonnance.MedicamentOrdonnances.Select(mo => new MedicamentHistoriqueDTO
+                Medicaments = ordonnance.MedicamentOrdonnances.Select(mo => new MedicamentHistorique
                 {
-                    MedicamentName = mo.Medicament.Name,
+                    Nom = mo.Medicament.Name, // Assurez-vous que le nom de propriété est correct
                     Quantite = mo.Quantite
                 }).ToList(),
                 CreationDate = DateTime.UtcNow
@@ -253,9 +253,11 @@ namespace ProjetNET.Modeles.Repository
         }
 
         // Get Ordonnance History
-        public async Task<IEnumerable<OrdonnanceHistorique>> GetOrdonnanceHistory()
+        public async Task<List<OrdonnanceHistorique>> GetHistoriqueAsync()
         {
-            return await context.OrdonnanceHistoriques.ToListAsync();
+            return await context.OrdonnanceHistoriques
+                .Include(h => h.Medicaments) // Inclure les médicaments associés
+                .ToListAsync();
         }
     }
 }

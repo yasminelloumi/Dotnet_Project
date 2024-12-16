@@ -39,18 +39,19 @@ namespace ProjetNET.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var patient = await _patientRepository.GetById(id);
+            var patient = await _patientRepository.GetPatientWithHistorique(id);
+
             if (patient == null)
             {
                 return NotFound($"Patient with ID {id} not found.");
             }
 
-            // Retourner le patient avec l'historique des médicaments
             return Ok(new
             {
                 patient.ID,
                 patient.NamePatient,
                 patient.DateOfBirth,
+                Historique = patient.Historique // Inclure l'historique des médicaments
             });
         }
 
@@ -130,19 +131,18 @@ namespace ProjetNET.Controllers
         }
 
 
+        [HttpGet("GetMedicaments/{patientId}")]
+        public async Task<IActionResult> GetMedicaments(int patientId)
+        {
+            var medicaments = await _patientRepository.GetMedicamentsByPatientId(patientId);
 
-        //[HttpGet("GetMedicaments/{patientId}")]
-        //public async Task<IActionResult> GetMedicaments(int patientId)
-        //{
-        //    var medicaments = await _patientRepository.GetMedicamentsByPatientId(patientId);
+            if (medicaments == null || !medicaments.Any())
+            {
+                return NotFound("No medicaments found for this patient.");
+            }
 
-        //    if (medicaments == null || !medicaments.Any())
-        //    {
-        //        return NotFound("No medicaments found for this patient.");
-        //    }
-
-        //    return Ok(medicaments);
-        //}
+            return Ok(medicaments);
+        }
 
     }
 }

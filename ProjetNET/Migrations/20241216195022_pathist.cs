@@ -5,7 +5,7 @@
 namespace ProjetNET.Migrations
 {
     /// <inheritdoc />
-    public partial class toto : Migration
+    public partial class pathist : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

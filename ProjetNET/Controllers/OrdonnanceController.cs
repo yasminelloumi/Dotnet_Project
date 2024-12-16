@@ -182,22 +182,24 @@ namespace ProjetNET.Controllers
             }
         }
 
-        [HttpGet("history")]
-        public async Task<IActionResult> GetOrdonnanceHistory()
+         [HttpGet("historique")]
+    public async Task<IActionResult> GetHistorique()
+    {
+        try
         {
-            try
+            var historique = await ordonnanceRepository.GetHistoriqueAsync();
+
+            if (historique == null || !historique.Any())
             {
-                var history = await ordonnanceRepository.GetOrdonnanceHistory();
-                if (history == null || !history.Any())
-                {
-                    return NotFound("No ordonnance history found.");
-                }
-                return Ok(history);
+                return NotFound(new { Message = "Aucun historique trouvé." });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+
+            return Ok(historique);
         }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "Une erreur s'est produite.", Details = ex.Message });
+        }
+    }
     }
 }

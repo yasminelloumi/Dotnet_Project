@@ -10,6 +10,6 @@ namespace ProjetNET.Modeles.Repository
         Task<bool> DeleteOrdonnance(int id); // Delete a specific Ordonnance
         Task<Ordonnance> UpdateOrdonnanceAsync(int id, UpdateOrdonnanceDTO dto); // Update an existing Ordonnance
         Task<IEnumerable<OrdonnanceResponseDTO>> SearchOrdonnances(string medecinId, int? patientId); // Search Ordonnances by Medecin and Patient
-        Task<IEnumerable<OrdonnanceHistorique>> GetOrdonnanceHistory(); // Get the history of Ordonnances
+        Task<List<OrdonnanceHistorique>> GetHistoriqueAsync(); // Get the history of Ordonnances
     }
 }

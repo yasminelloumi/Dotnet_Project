@@ -44,25 +44,14 @@ namespace ProjetNET.Modeles.Repository
         }
 
         //hist
-        //public async Task<List<Medicament>> GetMedicamentsByPatientId(int patientId)
-        //{
-        //    // Récupérez le patient avec ses ordonnances et leurs médicaments
-        //    var patient = await _context.Patients
-        //        .Include(p => p.Ordonnances)
-        //        .ThenInclude(o => o.MedicamentOrdonnances)
-        //        .FirstOrDefaultAsync(p => p.ID == patientId);
-
-        //    if (patient == null)
-        //    {
-        //        return null; // Patient introuvable
-        //    }
-
-        //    // Récupérez tous les médicaments via les ordonnances
-        ////    return patient.Ordonnances
-        ////                  .SelectMany(o => o.Medicament)
-        ////                  .Distinct()
-        ////                  .ToList();
-        //}
+        public async Task<Patient> GetPatientWithHistorique(int id)
+        {
+            return await _context.Patients
+                .Include(p => p.Ordonnances)
+                .ThenInclude(o => o.MedicamentOrdonnances)
+                .ThenInclude(mo => mo.Medicament)
+                .FirstOrDefaultAsync(p => p.ID == id);
+        }
         //methode recherche
         public async Task<List<Patient>> SearchPatients(string searchTerm)
         {
@@ -90,6 +79,26 @@ namespace ProjetNET.Modeles.Repository
                         .Include(p => p.Ordonnances)
                             .ThenInclude(o => o.MedicamentOrdonnances)
                         .ToListAsync();
+        }
+
+        public async Task<List<string>> GetMedicamentsByPatientId(int patientId)
+        {
+            var patient = await _context.Patients
+                .Include(p => p.Ordonnances)
+                .ThenInclude(o => o.MedicamentOrdonnances)
+                .ThenInclude(mo => mo.Medicament)
+                .FirstOrDefaultAsync(p => p.ID == patientId);
+
+            if (patient == null)
+            {
+                return null;
+            }
+
+            return patient.Ordonnances
+                          .SelectMany(o => o.MedicamentOrdonnances)
+                          .Select(mo => mo.Medicament.Name)
+                          .Distinct()
+                          .ToList();
         }
 
 
