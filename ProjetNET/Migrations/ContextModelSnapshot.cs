@@ -204,6 +204,34 @@ namespace ProjetNET.Migrations
                     b.ToTable("OrdonnanceHistoriques");
                 });
 
+            modelBuilder.Entity("ProjetNET.DTO.DemandeFournisseur", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateDemande")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MedicamentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantiteDemandee")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Statut")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicamentId");
+
+                    b.ToTable("DemandesFournisseurs");
+                });
+
             modelBuilder.Entity("ProjetNET.Modeles.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -271,6 +299,32 @@ namespace ProjetNET.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("ProjetNET.Modeles.DemandeAchat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateDemande")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MedicamentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantite")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Statut")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DemandesAchats");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Fournisseur", b =>
@@ -527,6 +581,17 @@ namespace ProjetNET.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjetNET.DTO.DemandeFournisseur", b =>
+                {
+                    b.HasOne("ProjetNET.Modeles.Medicament", "Medicament")
+                        .WithMany()
+                        .HasForeignKey("MedicamentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medicament");
                 });
 
             modelBuilder.Entity("ProjetNET.Modeles.Medecin", b =>

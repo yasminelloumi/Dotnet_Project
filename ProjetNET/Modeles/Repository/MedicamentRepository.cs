@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using ProjetNET.DTO;
 
 namespace ProjetNET.Modeles.Repository
 {
@@ -64,6 +65,68 @@ namespace ProjetNET.Modeles.Repository
 
             return await query.ToListAsync();
         }
+        public async Task<string> GetMedicamentsEnSeuilAsync()
+        {
+            var medicamentsEnSeuil = await context.Medicaments
+                                                     .Where(m => m.QttStock <= 10)
+                                                     .ToListAsync();
+
+            // Vérifier si la liste est vide
+            if (!medicamentsEnSeuil.Any())
+            {
+                return "Aucun médicament en seuil critique.";
+            }
+
+            // Construire la chaîne avec les médicaments en seuil critique
+            var medicamentsMessage = string.Join(", ", medicamentsEnSeuil.Select(m => $"ID: {m.Id}, Nom: {m.Name}"));
+
+            // Retourner le message final
+            return $"Il y a des médicaments qui sont à 10 ou moins en quantité: {medicamentsMessage}.";
+        }
+
+
+        public async Task AjouterStockMedicamentAsync(int medicamentId, int quantite)
+        {
+            var medicament = await context.Medicaments.FindAsync(medicamentId);
+            if (medicament != null)
+            {
+                medicament.QttStock += quantite;
+                await context.SaveChangesAsync();
+            }
+        }
+
+        // Récupère les médicaments en seuil critique avec un DTO pour le formulaire
+        public async Task<List<MedicamentDemandeDto>> GetMedicamentsEnSeuilPourDemandeAsync()
+        {
+            return await context.Medicaments
+                .Where(m => m.QttStock <= 10)
+                .Select(m => new MedicamentDemandeDto
+                {
+                    MedicamentId = m.Id,
+                    MedicamentName = m.Name,
+                    QuantiteDemandee = 0 // Initialisé à 0, l'utilisateur le remplira
+                })
+                .ToListAsync();
+        }
+        // Ajoute les demandes de médicaments dans une table des demandes
+        public async Task<bool> AjouterDemandeMedicamentAsync(List<MedicamentDemandeDto> demandes)
+        {
+            if (demandes == null || !demandes.Any())
+                return false;
+
+            var demandesAchats = demandes.Select(d => new DemandeAchat
+            {
+                MedicamentId = d.MedicamentId,
+                Quantite = d.QuantiteDemandee,
+                Statut = "En attente", // Statut initial
+                DateDemande = DateTime.Now
+            }).ToList();
+
+            await context.DemandesAchats.AddRangeAsync(demandesAchats);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
 
     }
 }

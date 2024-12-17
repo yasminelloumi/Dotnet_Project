@@ -11,6 +11,7 @@ namespace ProjetNET.Modeles
         public float Prix { get; set; }
         public int QttStock { get; set; }
         public int QttSortie { get; set; } // Quantité sortie de stock
+
         public List<Notification> Notifications { get; set; } = new List<Notification>(); // Liens avec les notifications envoyées
 
     }

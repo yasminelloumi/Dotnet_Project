@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProjetNET.DTO;
 using ProjetNET.Modeles;
 using ProjetNET.Modeles.Repository;
 
@@ -131,9 +132,46 @@ namespace ProjetNET.Controllers
 
             return Ok(medicamentDTOs);
         }
-        ///
-      
+        [HttpGet("seuil")]
+        public async Task<IActionResult> GetMedicamentsSeuil()
+        {
+            var medicaments = await medicamentRepository.GetMedicamentsEnSeuilAsync();
+            return Ok(medicaments);
+        }
+
+        [HttpPost("ajouter-stock/{id}")]
+        public async Task<IActionResult> AjouterStock(int id, [FromBody] int quantite)
+        {
+            await medicamentRepository.AjouterStockMedicamentAsync(id, quantite);
+            return Ok("Stock ajouté avec succès.");
+        }
+
+        // Endpoint pour récupérer les médicaments en seuil critique
+        [HttpGet("en-seuil-pour-demande")]
+        public async Task<IActionResult> GetMedicamentsEnSeuilPourDemande()
+        {
+            var medicaments = await medicamentRepository.GetMedicamentsEnSeuilPourDemandeAsync();
+            return Ok(medicaments);
+        }
+
+        // Endpoint pour soumettre les demandes d'achat
+        [HttpPost("envoyer-demande")]
+        public async Task<IActionResult> EnvoyerDemande([FromBody] List<MedicamentDemandeDto> demandes)
+        {
+            if (demandes == null || !demandes.Any())
+            {
+                return BadRequest("Aucune demande reçue.");
+            }
+
+            var result = await medicamentRepository.AjouterDemandeMedicamentAsync(demandes);
+            if (result)
+                return Ok("La demande a été envoyée avec succès.");
+            else
+                return StatusCode(500, "Une erreur est survenue lors de l'envoi de la demande.");
+        }
 
 
-}
+
+
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetNET.Modeles;
 using ProjetNET.Modeles.Repository;
 using System.Threading.Tasks;
 
@@ -56,5 +57,30 @@ namespace ProjetNET.Controllers
             await fournisseurRepository.Envoyer(medicamentId, quantiteDemandee);
             return Ok($"Demande de {quantiteDemandee} unités du médicament avec ID {medicamentId} envoyée au fournisseur.");
         }
+        [HttpPost("verifier-disponibilite")]
+        public async Task ActionDemandeAchat(DemandeAchat demandeAchat)
+        {
+            bool isAvailable = await fournisseurRepository.VerifierDisponibiliteMedicament(demandeAchat);
+
+            if (isAvailable)
+            {
+                Console.WriteLine("Le médicament est disponible en stock.");
+            }
+            else
+            {
+                Console.WriteLine("Le médicament n'est pas disponible ou la quantité demandée dépasse le stock.");
+            }
+        }
+
+        [HttpPost("traiter")]
+        public async Task<IList<string>> TraiterDemandesAchat([FromBody] List<DemandeAchat> demandesAchat)
+        {
+            if (demandesAchat == null || !demandesAchat.Any())
+            {
+                throw new Exception("La liste des demandes d'achat est vide.");
+            }
+            return await fournisseurRepository.TraitementDemandeAchat(demandesAchat);
+        }
+
     }
 }

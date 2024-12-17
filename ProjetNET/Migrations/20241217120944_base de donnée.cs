@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetNET.Migrations
 {
     /// <inheritdoc />
-    public partial class hist : Migration
+    public partial class basededonnée : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,6 +49,22 @@ namespace ProjetNET.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DemandesAchats",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MedicamentId = table.Column<int>(type: "int", nullable: false),
+                    Quantite = table.Column<int>(type: "int", nullable: false),
+                    Statut = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateDemande = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DemandesAchats", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -279,6 +295,27 @@ namespace ProjetNET.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MedicamentHistorique",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantite = table.Column<int>(type: "int", nullable: false),
+                    OrdonnanceHistoriqueId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MedicamentHistorique", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MedicamentHistorique_OrdonnanceHistoriques_OrdonnanceHistoriqueId",
+                        column: x => x.OrdonnanceHistoriqueId,
+                        principalTable: "OrdonnanceHistoriques",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ordonnances",
                 columns: table => new
                 {
@@ -377,6 +414,11 @@ namespace ProjetNET.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MedicamentHistorique_OrdonnanceHistoriqueId",
+                table: "MedicamentHistorique",
+                column: "OrdonnanceHistoriqueId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MedicamentOrdonnances_IDMedicament",
                 table: "MedicamentOrdonnances",
                 column: "IDMedicament");
@@ -426,19 +468,25 @@ namespace ProjetNET.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "DemandesAchats");
+
+            migrationBuilder.DropTable(
+                name: "MedicamentHistorique");
+
+            migrationBuilder.DropTable(
                 name: "MedicamentOrdonnances");
 
             migrationBuilder.DropTable(
                 name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "OrdonnanceHistoriques");
-
-            migrationBuilder.DropTable(
                 name: "Pharmaciens");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "OrdonnanceHistoriques");
 
             migrationBuilder.DropTable(
                 name: "Medicaments");

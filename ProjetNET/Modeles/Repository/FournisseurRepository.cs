@@ -20,7 +20,7 @@ public class FournisseurRepository : IFournisseurRepository
     public async Task<int> EnvoyerNombreMedicamentsRecu(int medicamentId)
     {
         var medicament = await context.Medicaments.FindAsync(medicamentId);
-        var fournisseur = await context.Fournisseurs.FirstOrDefaultAsync();  // Récupérer le fournisseur
+        var fournisseur = await context.Fournisseurs.FirstOrDefaultAsync();
 
         if (medicament != null && medicament.QttStock <= 10 && fournisseur != null)
         {
@@ -51,7 +51,7 @@ public class FournisseurRepository : IFournisseurRepository
     public async Task Envoyer(int medicamentId, int quantite)
     {
         var medicament = await context.Medicaments.FirstOrDefaultAsync(m => m.Id == medicamentId);
-        var fournisseur = await context.Fournisseurs.FirstOrDefaultAsync();  // Récupérer le fournisseur
+        var fournisseur = await context.Fournisseurs.FirstOrDefaultAsync();
 
         if (medicament == null || fournisseur == null)
         {
@@ -112,5 +112,54 @@ public class FournisseurRepository : IFournisseurRepository
             await context.SaveChangesAsync();
         }
     }
+
+    public async Task<bool> VerifierDisponibiliteMedicament(DemandeAchat demandeAchat)
+    {
+        var dbDemandeAchat = await context.DemandesAchats
+                                          .FirstOrDefaultAsync(x => x.Id == demandeAchat.Id);
+        if (dbDemandeAchat == null)
+        {
+            throw new Exception("demande d'achat non existante");
+        }
+
+        var fournisseur = await context.Fournisseurs
+             .FirstOrDefaultAsync(f => f.Id == demandeAchat.MedicamentId);  // Chercher le fournisseur pour le médicament
+
+        if (fournisseur == null)
+        {
+            throw new Exception("Fournisseur not found");
+
+        }
+        if (demandeAchat.Quantite > fournisseur.QttStock)
+        {
+            return false;
+        }
+        var medicament = await context.Medicaments
+            .FirstOrDefaultAsync(m => m.Id == demandeAchat.MedicamentId);
+        if (medicament == null)
+        {
+            throw new Exception("Medicament not found");
+        }
+        medicament.QttStock += demandeAchat.Quantite;
+        fournisseur.QttStock -= demandeAchat.Quantite;
+        context.DemandesAchats.Remove(dbDemandeAchat);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<IList<string>> TraitementDemandeAchat(List<DemandeAchat> demandesAchat)
+    {
+        var retours = new List<string>();
+        foreach (var demande in demandesAchat)
+        {
+            var verif = await VerifierDisponibiliteMedicament(demande);
+            var msg = verif ? $"Le médicament {demande.MedicamentId} a été traité avec succès." :
+                              $"Le médicament {demande.MedicamentId} n'est pas en stock.";
+            retours.Add(msg);
+        }
+        return retours;
+    }
+
+
 
 }

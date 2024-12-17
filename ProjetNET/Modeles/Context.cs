@@ -20,6 +20,8 @@ namespace ProjetNET.Modeles
         public DbSet<Fournisseur> Fournisseurs { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<MedicamentOrdonnance> MedicamentOrdonnances { get; set; }
+        public DbSet<DemandeAchat> DemandesAchats { get; set; }
+
         // Enable lazy loading proxies
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
