@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;  // Add this for OpenApi
+using Microsoft.OpenApi.Models;  
 using ProjetNET.Modeles;
 using ProjetNET.Modeles.Repository;
 using ProjetNET.Repositories;
@@ -86,6 +86,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+
+
 // Ajout des services MVC
 builder.Services.AddControllers();
 
@@ -105,11 +107,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//CORS
+app.UseCors(builder =>
+{
+    builder
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .SetIsOriginAllowed(_ => true)
+        .AllowCredentials();
+});
 
 // Ajout des middlewares
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
