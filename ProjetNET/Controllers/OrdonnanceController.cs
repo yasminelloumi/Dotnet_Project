@@ -22,6 +22,7 @@ namespace ProjetNET.Controllers
 
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> CreateOrdonnance([FromBody] CreateOrdonnanceDTO dto)
         {
             if (dto == null)
@@ -31,12 +32,14 @@ namespace ProjetNET.Controllers
 
             try
             {
+                // Ensure the patient exists
                 var patient = await _context.Patients.FindAsync(dto.PatientId);
                 if (patient == null)
                 {
                     return BadRequest("Patient introuvable.");
                 }
 
+                // Ensure the doctor exists
                 var medecin = await _context.Medecins
                     .Include(m => m.User)
                     .FirstOrDefaultAsync(m => m.User.UserName == dto.MedecinName);
@@ -46,6 +49,7 @@ namespace ProjetNET.Controllers
                     return BadRequest("Médecin introuvable.");
                 }
 
+                // Create the Ordonnance
                 var ordonnance = new Ordonnance
                 {
                     PatientId = patient.ID,
@@ -53,19 +57,27 @@ namespace ProjetNET.Controllers
                     MedicamentOrdonnances = new List<MedicamentOrdonnance>()
                 };
 
+                // List to track messages for medications that can't be processed
+                var failedMedications = new List<string>();
+
+                // Process each medicament from the DTO
                 foreach (var medicamentDTO in dto.Medicaments)
                 {
                     var medicament = await _context.Medicaments.FindAsync(medicamentDTO.MedicamentId);
                     if (medicament == null)
                     {
-                        return BadRequest($"Médicament avec l'ID {medicamentDTO.MedicamentId} introuvable.");
+                        failedMedications.Add($"Médicament avec l'ID {medicamentDTO.MedicamentId} introuvable.");
+                        continue; // Skip this medication
                     }
 
+                    // Check if the requested quantity is available
                     if (medicamentDTO.Quantite > medicament.QttStock)
                     {
-                        return BadRequest($"La quantité de {medicament.Name} est insuffisante.");
+                        failedMedications.Add($"La quantité de {medicament.Name} est insuffisante.");
+                        continue; // Skip this medication
                     }
 
+                    // Create MedicamentOrdonnance record for the valid medication
                     var medicamentOrdonnance = new MedicamentOrdonnance
                     {
                         IDMedicament = medicament.Id,
@@ -73,14 +85,24 @@ namespace ProjetNET.Controllers
                         Medicament = medicament
                     };
 
-                    ordonnance.MedicamentOrdonnances.Add(medicamentOrdonnance);
-
+                    // Reduce the stock for the medication
                     medicament.QttStock -= medicamentDTO.Quantite;
+
+                    // Add to the Ordonnance's list of MedicamentOrdonnances
+                    ordonnance.MedicamentOrdonnances.Add(medicamentOrdonnance);
                 }
 
+                // If no medications could be processed, return a failure response
+                if (ordonnance.MedicamentOrdonnances.Count == 0)
+                {
+                    return BadRequest(new { Message = "Aucun médicament valide n'a été trouvé pour l'ordonnance.", FailedMedications = failedMedications });
+                }
+
+                // Save the Ordonnance and related MedicamentOrdonnances
                 await _context.Ordonnances.AddAsync(ordonnance);
                 await _context.SaveChangesAsync();
 
+                // Now that the Ordonnance is created, remove the MedicamentOrdonnances from the table
                 foreach (var medicamentOrdonnance in ordonnance.MedicamentOrdonnances)
                 {
                     _context.MedicamentOrdonnances.Remove(medicamentOrdonnance);
@@ -88,7 +110,8 @@ namespace ProjetNET.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Ok(ordonnance); 
+                // Return a response with the successful ordonnance and the failed medications
+                return Ok(new { Ordonnance = ordonnance, FailedMedications = failedMedications });
             }
             catch (ArgumentException ex)
             {
@@ -99,6 +122,7 @@ namespace ProjetNET.Controllers
                 return StatusCode(500, $"Une erreur est survenue: {ex.Message}");
             }
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrdonnance(int id)
