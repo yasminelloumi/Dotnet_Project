@@ -113,9 +113,20 @@ public class AccountController : ControllerBase
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             return Unauthorized("Invalid credentials.");
 
+        // Generate the JWT token
         var token = GenerateJwtToken(user);
-        return Ok(new { Token = token });
+
+        // Get the user's roles
+        var roles = await _userManager.GetRolesAsync(user);
+
+        // Return the token and the first role (or all roles if needed)
+        return Ok(new
+        {
+            token = token,
+            roles = roles.FirstOrDefault() // Assuming the user has one primary role
+        });
     }
+
 
     [HttpGet("profile")]
     [Authorize]

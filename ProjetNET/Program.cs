@@ -111,9 +111,9 @@ if (app.Environment.IsDevelopment())
 app.UseCors(builder =>
 {
     builder
-        .AllowAnyHeader()
+        .AllowAnyHeader()//app url 
         .AllowAnyMethod()
-        .SetIsOriginAllowed(_ => true)
+        .SetIsOriginAllowed(_ => true)//localhost react
         .AllowCredentials();
 });
 
