@@ -1,58 +1,59 @@
-﻿INSERT INTO Medicaments (Name, Description, Prix, QttStock,QttSortie) VALUES
-('ROSUVASCOR', 'ROSUVASCOR 10mg Comp Pell Bt 90', 50.24, 282,0),
-('VOLTARENE', 'VOLTARENE LP Comp LP 75mg Bt 30', 11.311, 376,0),
-('DUSPATALIN', 'DUSPATALIN Gélule 200mg Bt 16', 7.57, 169,0),
-('ARTOTEC', 'ARTOTEC Comp Gastro 50mg/0.2mg Bt 30', 15.67, 322,0),
-('TAREG', 'TAREG Comp Pell 160 MG BT 90', 142.995, 310,0),
-('DOLIPRANE', 'DOLIPRANE Pdre Sol Or 150mg Bt 12 Sachets', 1.63, 185,0),
-('PROFENID', 'PROFENID Comp 100mg Bt 30', 12.525, 229,0),
-('ESOCALM', 'ESOCALM 40 MG Gel Gastro-resistante BT 28', 24.725, 431,0),
-('OXYTETRACYCLINE', 'OXYTETRACYCLINE 3% Pde derm Tb 15gr', 2.67, 487,0),
-('DIAMEZID', 'DIAMEZID Comp Pell Sec LM 60 MG BT 30', 16.195, 100,0),
-('ANDROTARDYL', 'ANDROTARDYL Amp inj 250mg 1ml Bt 1', 13.341, 275,0),
-('TRITAZIDE', 'TRITAZIDE 10mg/12.5mg Comp Séc Bt/30', 50.32, 216,0),
-('FUMIDEX', 'FUMIDEX 2% Crème derm Tb 15gr', 6.051, 196,0),
-('LANSOPRAL', 'LANSOPRAL 15mg gélule F 30', 19.67, 182,0),
-('ARHIN', 'ARHIN Sol Buv 1 % Fl 15 ml', 4.6, 369,0),
-('ORACEFAL', 'ORACEFAL Comp 1000mg Bt 6', 8.939, 470,0),
-('RAXIDONE', 'RAXIDONE Sol Buv 1 MG/ML FL 30', 26.065, 398,0),
-('SOLUPRED', 'SOLUPRED Comp Effev 5 MG FL 30', 6.47, 285,0),
-('BIRODOGYL', 'BIRODOGYL comp.pell. Bt/10', 8.965, 170,0),
-('METEOSPASMYL', 'METEOSPASMYL Caps 60mg Bt 20', 5.131, 435,0),
-('LARGACTIL', 'LARGACTIL Comp sec 25mg Bt 50', 0.97, 298,0),
-('LEVOREC', 'LEVOREC 500mg Comp Pell Séc Bt 5', 15.315, 181,0),
-('COARAVEN', 'COARAVEN Comp Pell 300 MG/25 MG BT 30', 44.98, 52,0),
-('ASPEGIC', 'ASPEGIC Pdre P Sol Or 250 MG BT 16', 3.22, 409,0),
-('TRITAZIDE', 'TRITAZIDE 10mg/25mg Comp Séc Bt 30', 50.32, 434,0),
-('BETASONE', 'BETASONE 0.05% Creme Derm Tb 15gr', 2.79, 318,0),
-('DOGMACARE', 'DOGMACARE Gelule 50 MG BT 30', 5.51, 257,0),
-('TELEBRIX', 'TELEBRIX 35 Sol Inj 35 % FL 200 ml', 131.899, 358,0),
-('BIPROCARD', 'BIPROCARD 2.5mg Comp Pell Séc Bt 30', 5.525, 283,0),
-('DIPROSTENE', 'DIPROSTENE 7 mg/ml Susp inj 1ml Bt 1', 5.55, 487,0),
-('GASTRAMYL', 'GASTRAMYL Susp Buv Fl 200ml', 3.085, 288,0),
-('ROMAC', 'ROMAC Comp 100mg Bt 12', 7.36, 245,0),
-('VASOCARD', 'VASOCARD LP Comp Sec 200mg Bt 30', 10.84, 20,0),
-('ACTAFON', 'ACTAFON Comp Orodisper 80 MG BT 20', 5.48, 245,0),
-('ALPHAGAN', 'ALPHAGAN Collyre 0.2% Fl 5ml', 21.06, 389,0),
-('AMOCLAN', 'AMOCLAN Pdre P Sus Or 1GR/12.5MG BT 12 Sachets doses', 17.94, 79,0),
-('AEROL', 'AEROL Aérosol 100µg Fl 200', 7.37, 119,0),
-('DOSTINEX', 'DOSTINEX 0.5 mg comp.séc.fl/2', 31.93, 416,0),
-('ALTIAZEM', 'ALTIAZEM Comp 60mg Bt 30', 5.575, 403,0),
-('GASTRAL', 'GASTRAL Gélule 20mg Fl 14', 22.96, 15,0),
-('VALUE', 'VALUE PLUS 10mg/160mg Comp Pell Bt 30', 38.25, 334,0),
-('APYROSIS', 'APYROSIS Susp Buv  Sachets -doses /10 ml Bt 24', 6.495, 399,0),
-('CELASONE', 'CELASONE 4 (4mg/1ml) SOL. INJ. BT 3/1 ml', 5.445, 55,0),
-('ARADEUX', 'ARADEUX PLUS 300/5 300mg/5mg Com Pell Bt 30', 39.815, 500,0),
-('CYVAX', 'CYVAX 50ug/25ug/Dose Susp P Inhalat Fl 120', 17.245, 447,0),
-('ASPEGIC', 'ASPEGIC Pdre P Sol Or  500 MG BT 16', 3.935, 248,0),
-('IPPSIUM', 'IPPSIUM Geule Gastroresistant 20 mg Fl 14', 17.39, 217,0),
-('TETRADOX', 'TETRADOX 100 mg Comp Bt 10 ( EX DOXAMICINE )', 4.255, 16,0),
-('NEO', 'NEO HEALAR Suppo Bt 10', 6.394, 224,0),
-('FALOXIM', 'FALOXIM Pdre Susp Or 100mg/5ml Fl 60ml', 14.51, 357,0),
-('SOULADOL', 'SOULADOL 100 Sol  Inj 100mg/2ml Bt 5', 9.085, 269,0),
-('SAIFORAL', 'SAIFORAL  Pdre Susp Buv 500mg/5ml  Fl 60ml', 8.755, 420,0),
-('AMOCLAN', 'AMOCLAN Comp Pell 500 MG/62.5 MG FL 12', 9.815, 400,0),
-('LEVOX', 'LEVOX Comp Pell Sec 500 MG BT 10', 32.55, 43,0),
-('APIDRA', 'APIDRA SOLOSTAR 100 UI/ML Sol Inj Bt 5 Stylos', 88.469, 37,0),
-('AMLODEP', 'AMLODEP Comp 5 MG BT 60', 18.46, 315,0),
-('BISOPRAL', 'BISOPRAL Comp Pell Sec 5 MG BT 30', 8.6, 352,0)
+﻿SET IDENTITY_INSERT [dbo].[Medicaments] ON
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (1, N'ROSUVASCOR', N'ROSUVASCOR 10mg Comp Pell Bt 90', 50.24, 282, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (2, N'VOLTARENE', N'VOLTARENE LP Comp LP 75mg Bt 30', 11.311, 376, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (3, N'DUSPATALIN', N'DUSPATALIN Gélule 200mg Bt 16', 7.57, 169, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (4, N'ARTOTEC', N'ARTOTEC Comp Gastro 50mg/0.2mg Bt 30', 15.67, 322, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (5, N'TAREG', N'TAREG Comp Pell 160 MG BT 90', 142.995, 310, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (6, N'DOLIPRANE', N'DOLIPRANE Pdre Sol Or 150mg Bt 12 Sachets', 1.63, 185, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (7, N'PROFENID', N'PROFENID Comp 100mg Bt 30', 12.525, 229, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (8, N'ESOCALM', N'ESOCALM 40 MG Gel Gastro-resistante BT 28', 24.725, 431, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (9, N'OXYTETRACYCLINE', N'OXYTETRACYCLINE 3% Pde derm Tb 15gr', 2.67, 487, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (10, N'DIAMEZID', N'DIAMEZID Comp Pell Sec LM 60 MG BT 30', 16.195, 20, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (11, N'ANDROTARDYL', N'ANDROTARDYL Amp inj 250mg 1ml Bt 1', 13.341, 10, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (12, N'TRITAZIDE', N'TRITAZIDE 10mg/12.5mg Comp Séc Bt/30', 50.32, 20, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (13, N'FUMIDEX', N'FUMIDEX 2% Crème derm Tb 15gr', 6.051, 196, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (14, N'LANSOPRAL', N'LANSOPRAL 15mg gélule F 30', 19.67, 182, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (15, N'ARHIN', N'ARHIN Sol Buv 1 % Fl 15 ml', 4.6, 25, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (16, N'ORACEFAL', N'ORACEFAL Comp 1000mg Bt 6', 8.939, 26, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (17, N'RAXIDONE', N'RAXIDONE Sol Buv 1 MG/ML FL 30', 26.065, 398, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (18, N'SOLUPRED', N'SOLUPRED Comp Effev 5 MG FL 30', 6.47, 285, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (19, N'BIRODOGYL', N'BIRODOGYL comp.pell. Bt/10', 8.965, 170, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (20, N'METEOSPASMYL', N'METEOSPASMYL Caps 60mg Bt 20', 5.131, 435, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (21, N'LARGACTIL', N'LARGACTIL Comp sec 25mg Bt 50', 0.97, 298, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (22, N'LEVOREC', N'LEVOREC 500mg Comp Pell Séc Bt 5', 15.315, 181, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (23, N'COARAVEN', N'COARAVEN Comp Pell 300 MG/25 MG BT 30', 44.98, 52, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (24, N'ASPEGIC', N'ASPEGIC Pdre P Sol Or 250 MG BT 16', 3.22, 409, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (25, N'TRITAZIDE', N'TRITAZIDE 10mg/25mg Comp Séc Bt 30', 50.32, 434, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (26, N'BETASONE', N'BETASONE 0.05% Creme Derm Tb 15gr', 2.79, 318, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (27, N'DOGMACARE', N'DOGMACARE Gelule 50 MG BT 30', 5.51, 257, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (28, N'TELEBRIX', N'TELEBRIX 35 Sol Inj 35 % FL 200 ml', 131.899, 358, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (29, N'BIPROCARD', N'BIPROCARD 2.5mg Comp Pell Séc Bt 30', 5.525, 283, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (30, N'DIPROSTENE', N'DIPROSTENE 7 mg/ml Susp inj 1ml Bt 1', 5.55, 487, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (31, N'GASTRAMYL', N'GASTRAMYL Susp Buv Fl 200ml', 3.085, 288, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (32, N'ROMAC', N'ROMAC Comp 100mg Bt 12', 7.36, 245, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (33, N'VASOCARD', N'VASOCARD LP Comp Sec 200mg Bt 30', 10.84, 20, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (34, N'ACTAFON', N'ACTAFON Comp Orodisper 80 MG BT 20', 5.48, 245, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (35, N'ALPHAGAN', N'ALPHAGAN Collyre 0.2% Fl 5ml', 21.06, 389, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (36, N'AMOCLAN', N'AMOCLAN Pdre P Sus Or 1GR/12.5MG BT 12 Sachets doses', 17.94, 79, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (37, N'AEROL', N'AEROL Aérosol 100µg Fl 200', 7.37, 119, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (38, N'DOSTINEX', N'DOSTINEX 0.5 mg comp.séc.fl/2', 31.93, 416, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (39, N'ALTIAZEM', N'ALTIAZEM Comp 60mg Bt 30', 5.575, 403, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (40, N'GASTRAL', N'GASTRAL Gélule 20mg Fl 14', 22.96, 15, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (41, N'VALUE', N'VALUE PLUS 10mg/160mg Comp Pell Bt 30', 38.25, 334, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (42, N'APYROSIS', N'APYROSIS Susp Buv  Sachets -doses /10 ml Bt 24', 6.495, 399, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (43, N'CELASONE', N'CELASONE 4 (4mg/1ml) SOL. INJ. BT 3/1 ml', 5.445, 55, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (44, N'ARADEUX', N'ARADEUX PLUS 300/5 300mg/5mg Com Pell Bt 30', 39.815, 500, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (45, N'CYVAX', N'CYVAX 50ug/25ug/Dose Susp P Inhalat Fl 120', 17.245, 447, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (46, N'ASPEGIC', N'ASPEGIC Pdre P Sol Or  500 MG BT 16', 3.935, 248, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (47, N'IPPSIUM', N'IPPSIUM Geule Gastroresistant 20 mg Fl 14', 17.39, 217, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (48, N'TETRADOX', N'TETRADOX 100 mg Comp Bt 10 ( EX DOXAMICINE )', 4.255, 16, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (49, N'NEO', N'NEO HEALAR Suppo Bt 10', 6.394, 224, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (50, N'FALOXIM', N'FALOXIM Pdre Susp Or 100mg/5ml Fl 60ml', 14.51, 357, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (51, N'SOULADOL', N'SOULADOL 100 Sol  Inj 100mg/2ml Bt 5', 9.085, 269, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (52, N'SAIFORAL', N'SAIFORAL  Pdre Susp Buv 500mg/5ml  Fl 60ml', 8.755, 420, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (53, N'AMOCLAN', N'AMOCLAN Comp Pell 500 MG/62.5 MG FL 12', 9.815, 400, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (54, N'LEVOX', N'LEVOX Comp Pell Sec 500 MG BT 10', 32.55, 43, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (55, N'APIDRA', N'APIDRA SOLOSTAR 100 UI/ML Sol Inj Bt 5 Stylos', 88.469, 37, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (56, N'AMLODEP', N'AMLODEP Comp 5 MG BT 60', 18.46, 315, 0)
+INSERT INTO [dbo].[Medicaments] ([Id], [Name], [Description], [Prix], [QttStock], [QttSortie]) VALUES (57, N'BISOPRAL', N'BISOPRAL Comp Pell Sec 5 MG BT 30', 8.6, 352, 0)
+SET IDENTITY_INSERT [dbo].[Medicaments] OFF

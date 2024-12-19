@@ -98,16 +98,21 @@ namespace ProjetNET.Modeles.Repository
         // Récupère les médicaments en seuil critique avec un DTO pour le formulaire
         public async Task<List<MedicamentDemandeDto>> GetMedicamentsEnSeuilPourDemandeAsync()
         {
-            return await context.Medicaments
+            var results = await context.Medicaments
                 .Where(m => m.QttStock <= 10)
                 .Select(m => new MedicamentDemandeDto
                 {
                     MedicamentId = m.Id,
                     MedicamentName = m.Name,
-                    QuantiteDemandee = 0 // Initialisé à 0, l'utilisateur le remplira
+                    QuantiteDemandee = 0
                 })
                 .ToListAsync();
+
+            // Log the result count
+            Console.WriteLine($"Retrieved {results.Count} medicaments below threshold.");
+            return results;
         }
+
         // Ajoute les demandes de médicaments dans une table des demandes
         public async Task<bool> AjouterDemandeMedicamentAsync(List<MedicamentDemandeDto> demandes)
         {

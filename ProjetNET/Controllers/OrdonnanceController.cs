@@ -20,6 +20,7 @@ namespace ProjetNET.Controllers
             this.ordonnanceRepository = ordonnanceRepository;
         }
 
+
         [HttpPost]
         public async Task<IActionResult> CreateOrdonnance([FromBody] CreateOrdonnanceDTO dto)
         {
@@ -30,20 +31,71 @@ namespace ProjetNET.Controllers
 
             try
             {
-                // Appel à la méthode du repository pour créer l'ordonnance
-                var ordonnanceResponse = await ordonnanceRepository.CreateOrdonnanceAsync(dto);
+                var patient = await _context.Patients.FindAsync(dto.PatientId);
+                if (patient == null)
+                {
+                    return BadRequest("Patient introuvable.");
+                }
 
-                // Retourner une réponse avec le DTO d'ordonnance
-                return Ok(ordonnanceResponse);
+                var medecin = await _context.Medecins
+                    .Include(m => m.User)
+                    .FirstOrDefaultAsync(m => m.User.UserName == dto.MedecinName);
+
+                if (medecin == null)
+                {
+                    return BadRequest("Médecin introuvable.");
+                }
+
+                var ordonnance = new Ordonnance
+                {
+                    PatientId = patient.ID,
+                    MedecinId = medecin.Id,
+                    MedicamentOrdonnances = new List<MedicamentOrdonnance>()
+                };
+
+                foreach (var medicamentDTO in dto.Medicaments)
+                {
+                    var medicament = await _context.Medicaments.FindAsync(medicamentDTO.MedicamentId);
+                    if (medicament == null)
+                    {
+                        return BadRequest($"Médicament avec l'ID {medicamentDTO.MedicamentId} introuvable.");
+                    }
+
+                    if (medicamentDTO.Quantite > medicament.QttStock)
+                    {
+                        return BadRequest($"La quantité de {medicament.Name} est insuffisante.");
+                    }
+
+                    var medicamentOrdonnance = new MedicamentOrdonnance
+                    {
+                        IDMedicament = medicament.Id,
+                        Quantite = medicamentDTO.Quantite,
+                        Medicament = medicament
+                    };
+
+                    ordonnance.MedicamentOrdonnances.Add(medicamentOrdonnance);
+
+                    medicament.QttStock -= medicamentDTO.Quantite;
+                }
+
+                await _context.Ordonnances.AddAsync(ordonnance);
+                await _context.SaveChangesAsync();
+
+                foreach (var medicamentOrdonnance in ordonnance.MedicamentOrdonnances)
+                {
+                    _context.MedicamentOrdonnances.Remove(medicamentOrdonnance);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(ordonnance); 
             }
             catch (ArgumentException ex)
             {
-                // Gestion des erreurs spécifiques
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                // Gestion des erreurs générales
                 return StatusCode(500, $"Une erreur est survenue: {ex.Message}");
             }
         }
@@ -53,13 +105,12 @@ namespace ProjetNET.Controllers
         {
             try
             {
-                // Fetch Ordonnance and its related MedicamentOrdonnances and Medicaments
                 var ordonnance = await _context.Ordonnances
                     .Include(o => o.MedicamentOrdonnances)
-                        .ThenInclude(mo => mo.Medicament) // Include Medicament in MedicamentOrdonnance
-                    .Include(o => o.Patient) // Include Patient to access Patient's name
-                    .Include(o => o.Medecin) // Include Medecin to access Medecin's user
-                        .ThenInclude(m => m.User) // Include ApplicationUser (IdentityUser)
+                        .ThenInclude(mo => mo.Medicament) 
+                    .Include(o => o.Patient) 
+                    .Include(o => o.Medecin)
+                        .ThenInclude(m => m.User) 
                     .FirstOrDefaultAsync(o => o.Id == id);
 
                 if (ordonnance == null)
@@ -67,19 +118,16 @@ namespace ProjetNET.Controllers
                     return NotFound("Ordonnance not found.");
                 }
 
-                // Map Ordonnance to OrdonnanceDTO
                 var ordonnanceDto = new OrdonnanceDTO
                 {
                     Id = ordonnance.Id,
-                    // Access the UserName from the Medecin's User (ApplicationUser)
                     MedecinName = ordonnance.Medecin?.User?.UserName ?? "Unknown Medecin",
-                    PatientName = ordonnance.Patient?.NamePatient ?? "Unknown Patient", // Use NamePatient for the patient's name
+                    PatientName = ordonnance.Patient?.NamePatient ?? "Unknown Patient", 
                     Medicaments = ordonnance.MedicamentOrdonnances
-                        .Select(mo => mo.Medicament.Name) // Only take the name of the Medicament
+                        .Select(mo => mo.Medicament.Name) 
                         .ToList()
                 };
 
-                // Return the DTO
                 return Ok(ordonnanceDto);
             }
             catch (Exception ex)
@@ -88,8 +136,6 @@ namespace ProjetNET.Controllers
             }
         }
 
-
-        // Méthode GET pour récupérer toutes les ordonnances
         [HttpGet]
         public async Task<IActionResult> GetAllOrdonnances()
         {
@@ -108,7 +154,6 @@ namespace ProjetNET.Controllers
             }
         }
 
-        // Méthode DELETE pour supprimer une ordonnance
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrdonnance(int id)
         {
@@ -127,7 +172,6 @@ namespace ProjetNET.Controllers
             }
         }
 
-        // Méthode PUT pour mettre à jour une ordonnance
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrdonnance(int id, [FromBody] UpdateOrdonnanceDTO dto)
         {
@@ -143,11 +187,11 @@ namespace ProjetNET.Controllers
                 {
                     return NotFound("Ordonnance not found.");
                 }
-                return Ok(response); // Ordonnance mise à jour avec succès
+                return Ok(response); 
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { Message = ex.Message }); // Erreur liée à l'argument
+                return BadRequest(new { Message = ex.Message }); 
             }
             catch (Exception ex)
             {
@@ -155,11 +199,9 @@ namespace ProjetNET.Controllers
             }
         }
 
-        // Méthode GET pour rechercher des ordonnances par des critères
         [HttpGet("search")]
         public async Task<IActionResult> SearchOrdonnances([FromQuery] string medecinId, [FromQuery] int? patientId)
         {
-            // Vérifier si aucun critère n'est donné
             if (string.IsNullOrEmpty(medecinId) && patientId == null)
             {
                 return BadRequest("At least one search criterion (MedecinId or PatientId) must be provided.");
@@ -174,7 +216,7 @@ namespace ProjetNET.Controllers
                     return NotFound("No ordonnances found matching the search criteria.");
                 }
 
-                return Ok(ordonnances); // Ordonnances correspondant aux critères
+                return Ok(ordonnances); 
             }
             catch (Exception ex)
             {

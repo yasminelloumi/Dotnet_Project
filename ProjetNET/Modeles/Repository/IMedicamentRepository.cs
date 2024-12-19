@@ -14,5 +14,7 @@ namespace ProjetNET.Modeles.Repository
         Task AjouterStockMedicamentAsync(int medicamentId, int quantite);
         Task<List<MedicamentDemandeDto>> GetMedicamentsEnSeuilPourDemandeAsync();
         Task<bool> AjouterDemandeMedicamentAsync(List<MedicamentDemandeDto> demandes);
+
+
     }
 }
