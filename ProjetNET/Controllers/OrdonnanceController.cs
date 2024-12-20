@@ -21,7 +21,7 @@ namespace ProjetNET.Controllers
         }
 
 
-        [HttpPost]
+        
         [HttpPost]
         public async Task<IActionResult> CreateOrdonnance([FromBody] CreateOrdonnanceDTO dto)
         {
@@ -92,17 +92,14 @@ namespace ProjetNET.Controllers
                     ordonnance.MedicamentOrdonnances.Add(medicamentOrdonnance);
                 }
 
-                // If no medications could be processed, return a failure response
                 if (ordonnance.MedicamentOrdonnances.Count == 0)
                 {
                     return BadRequest(new { Message = "Aucun médicament valide n'a été trouvé pour l'ordonnance.", FailedMedications = failedMedications });
                 }
 
-                // Save the Ordonnance and related MedicamentOrdonnances
                 await _context.Ordonnances.AddAsync(ordonnance);
                 await _context.SaveChangesAsync();
 
-                // Now that the Ordonnance is created, remove the MedicamentOrdonnances from the table
                 foreach (var medicamentOrdonnance in ordonnance.MedicamentOrdonnances)
                 {
                     _context.MedicamentOrdonnances.Remove(medicamentOrdonnance);
@@ -110,7 +107,6 @@ namespace ProjetNET.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // Return a response with the successful ordonnance and the failed medications
                 return Ok(new { Ordonnance = ordonnance, FailedMedications = failedMedications });
             }
             catch (ArgumentException ex)
